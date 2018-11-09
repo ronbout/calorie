@@ -1,0 +1,13 @@
+// Variable Overrides
+
+$body-color: red;
+
+// Bootstrap SASS
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+// Other styling
+body {
+  height: 100%;
+  width: 100%;
+  font-family: "Montserrat", "sans-serif";
+}
