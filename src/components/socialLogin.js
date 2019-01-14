@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+// eslint-disable-next-line
 import FacebookLogin from "react-facebook-login";
 import GoogleLogin from "react-google-login";
 
@@ -8,12 +9,14 @@ class SocialLogin extends Component {
     this.state = {};
   }
 
-  responseFacebook = resp => {
+  /*   responseFacebook = resp => {
     this.props.handleLogin(resp.email, "social");
-  };
+  }; */
 
   responseGoogle = resp => {
     // since prototype, just cheat on email as I use yahoo, not google
+    console.log("google resp: ", resp);
+    //  email, familyName, givenName, googleId, imageUrl, name
     this.props.handleLogin("ronbout@yahoo.com", "social");
   };
 

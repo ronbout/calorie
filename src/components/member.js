@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 
 class Member extends Component {
   constructor(props) {
@@ -6,12 +7,20 @@ class Member extends Component {
     console.log("props: ", this.props);
   }
   render() {
-    console.log(this.props);
     return (
-      <div className="container-fluid">
-        <h1>Member Page</h1>
-        {this.props.user && <h2>{this.props.user.email}</h2>}
-      </div>
+      // check for user logged in
+      this.props.user.memberId ? (
+        this.props.user.memberId.toString() === this.props.urlid ? (
+          <div className="container-fluid">
+            <h1>Member Page</h1>
+            {this.props.user && <h2>{this.props.user.email}</h2>}
+          </div>
+        ) : (
+          <Redirect to="/" />
+        )
+      ) : (
+        <Redirect to="/login" />
+      )
     );
   }
 }

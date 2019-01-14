@@ -19,7 +19,7 @@ const TopNavBar = () => {
         <div className="collapse navbar-collapse" id="topmenu">
           <ul className="navbar-nav ml-auto">
             <li className="nav-item active">
-              <NavLink to="/" className="nav-link">
+              <NavLink to="/" exact className="nav-link">
                 Home
               </NavLink>
             </li>
@@ -29,17 +29,17 @@ const TopNavBar = () => {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink to="contact" className="nav-link">
+              <NavLink to="/contact" className="nav-link">
                 Contact
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink to="signup" className="nav-link">
+              <NavLink to="/signup" className="nav-link">
                 Sign Up
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink to="login" className="login-link nav-link">
+              <NavLink to="/login" className="login-link nav-link">
                 Login
               </NavLink>
             </li>

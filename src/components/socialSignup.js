@@ -5,6 +5,13 @@ class socialSignup extends Component {
     super(props);
     this.state = {};
   }
+  /****
+   * nothing has been written for sign up yet
+   * will need to take info and add to database
+   * through api.  if google login, may need to ask
+   * more info
+   */
+
   render() {
     return (
       <React.Fragment>

@@ -10,16 +10,28 @@ class EmailSignup extends Component {
       <React.Fragment>
         <div className="email-signup container-fluid d-flex flex-column justify-content-center">
           <div className="input-group">
-            <input type="text" class="form-control" placeholder="First Name" />
+            <input
+              type="text"
+              className="form-control"
+              placeholder="First Name"
+            />
           </div>
           <div className="input-group">
-            <input type="text" class="form-control" placeholder="Last Name" />
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Last Name"
+            />
           </div>
           <div className="input-group">
-            <input type="text" class="form-control" placeholder="Email" />
+            <input type="text" className="form-control" placeholder="Email" />
           </div>
           <div className="input-group">
-            <input type="text" class="form-control" placeholder="Password" />
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Password"
+            />
           </div>
           <div className="input-group">
             <input

@@ -7,8 +7,8 @@ const Hero = () => {
       <div className="container text-center">
         <h1>Calorie Meter</h1>
         <p>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-          Exercitationem rem nobis quasi.
+          The first step to achieving the best version of you is to know what
+          you are putting into your body.
         </p>
         <NavLink to="/signup">
           <button className="learn btn btn-danger">Sign Up</button>
