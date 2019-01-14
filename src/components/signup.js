@@ -5,6 +5,8 @@ import EmailSignup from "./emailSignup";
 class SignUp extends Component {
   constructor(props) {
     super(props);
+    console.log("this: ", this);
+    console.log("props: ", this.props);
     this.state = {};
   }
   render() {

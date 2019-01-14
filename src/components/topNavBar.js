@@ -1,7 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-const TopNavBar = () => {
+const TopNavBar = ({ user, handleLogout }) => {
+  console.log("user: ", user);
   return (
     <nav className="navbar navbar-expand-md navbar-light bg-light sticky-top">
       <div className="container-fluid">
@@ -38,11 +39,37 @@ const TopNavBar = () => {
                 Sign Up
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink to="/login" className="login-link nav-link">
-                Login
-              </NavLink>
-            </li>
+            {user.memberId ? (
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {user.userName}
+                </a>
+                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      handleLogout();
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </li>
+            ) : (
+              <li className="nav-item">
+                <NavLink to="/login" className="login-link nav-link">
+                  Login
+                </NavLink>
+              </li>
+            )}
           </ul>
         </div>
       </div>

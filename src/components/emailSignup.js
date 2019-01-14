@@ -36,7 +36,7 @@ class EmailSignup extends Component {
           <div className="input-group">
             <input
               type="text"
-              class="form-control"
+              className="form-control"
               placeholder="Confirm password"
             />
           </div>

@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 class Member extends Component {
   constructor(props) {
     super(props);
+    console.log("this: ", this);
     console.log("props: ", this.props);
   }
   render() {

@@ -15,20 +15,22 @@ class App extends Component {
   constructor(props) {
     super(props);
     const storedUser = sessionStorage.getItem("user");
-    const userInfo = storedUser
-      ? JSON.parse(storedUser)
-      : {
-          email: "",
-          firstName: "",
-          lastName: "",
-          memberId: "",
-          totalCalsToday: 0,
-          userName: ""
-        };
+    const userInfo = storedUser ? JSON.parse(storedUser) : this.clearUser();
     this.state = {
       user: userInfo
     };
   }
+
+  clearUser = () => {
+    return {
+      email: "",
+      firstName: "",
+      lastName: "",
+      memberId: "",
+      totalCalsToday: 0,
+      userName: ""
+    };
+  };
 
   handleLogin = resp => {
     // add to session storage
@@ -40,10 +42,18 @@ class App extends Component {
     this.props.history.push(`/member/${this.state.user.memberId}`);
   };
 
+  handleLogout = () => {
+    sessionStorage.removeItem("user");
+    this.setState({
+      user: this.clearUser()
+    });
+    this.props.history.push("/");
+  };
+
   render() {
     return (
       <React.Fragment>
-        <TopNavBar />
+        <TopNavBar user={this.state.user} handleLogout={this.handleLogout} />
 
         <Switch>
           <Route
