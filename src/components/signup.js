@@ -9,6 +9,11 @@ class SignUp extends Component {
     console.log("props: ", this.props);
     this.state = {};
   }
+
+  handleSignUp = userInfo => {
+    console.log("userInfo: ", userInfo);
+  };
+
   render() {
     return (
       <div
@@ -17,7 +22,7 @@ class SignUp extends Component {
       >
         <h1>Sign Up</h1>
         <SocialSignup />
-        <EmailSignup />
+        <EmailSignup handleSignUp={this.handleSignUp} />
       </div>
     );
   }
