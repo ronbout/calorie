@@ -9,7 +9,7 @@ const API_KEY = "6y9fgv43dl40f9wl";
 class SignUp extends Component {
   constructor(props) {
     super(props);
-    this.state = { errMsg: "", confirmMsg: "" };
+    this.state = { errMsg: "", confirmMsg: "", socialInfo: null };
   }
 
   handleSignUp = userInfo => {
@@ -34,7 +34,7 @@ class SignUp extends Component {
           if (result.error) {
             this.setState({
               errMsg:
-                result.SQLState == 23000
+                result.SQLState === 23000
                   ? `Email ${userInfo.email} is already a registered user.`
                   : "An unknown error has occurred"
             });
@@ -51,6 +51,13 @@ class SignUp extends Component {
       });
   };
 
+  handleSocial = socialInfo => {
+    console.log(socialInfo);
+    this.setState({
+      socialInfo: socialInfo
+    });
+  };
+
   render() {
     return (
       <div
@@ -61,9 +68,25 @@ class SignUp extends Component {
           <div className="register-confirm">{this.state.confirmMsg}</div>
         ) : (
           <React.Fragment>
-            <h1>Sign Up</h1>
-            <SocialSignup />
-            <EmailSignup handleSignUp={this.handleSignUp} />
+            <h1>Register</h1>
+            {this.state.socialInfo ? (
+              <p style={{ textAlign: "center", marginTop: "24px" }}>
+                Enter Username to finish registration
+              </p>
+            ) : (
+              <React.Fragment>
+                <SocialSignup handleSocial={this.handleSocial} />
+                <p style={{ textAlign: "center", marginTop: "24px" }}>
+                  Or
+                  <br />
+                  Register by Email
+                </p>
+              </React.Fragment>
+            )}
+            <EmailSignup
+              handleSignUp={this.handleSignUp}
+              socialInfo={this.state.socialInfo}
+            />
             {this.state.errMsg && (
               <div className="register-error">{this.state.errMsg}</div>
             )}

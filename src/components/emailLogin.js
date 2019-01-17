@@ -36,7 +36,7 @@ class EmailLogin extends Component {
             </div>
             <div className="input-group">
               <input
-                type="text"
+                type="password"
                 className="form-control"
                 placeholder="password"
                 name="password"

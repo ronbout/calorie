@@ -14,8 +14,27 @@ class EmailSignup extends Component {
         password2: ""
       },
       emailErr: false,
-      passErr: false
+      passErr: false,
+      socialFlag: false
     };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.socialInfo !== prevProps.socialInfo) {
+      const socialInfo = this.props.socialInfo;
+      this.setState({
+        formFields: {
+          ...prevState.formFields,
+          firstName:
+            socialInfo && socialInfo.firstName ? socialInfo.firstName : "",
+          lastName:
+            socialInfo && socialInfo.lastName ? socialInfo.lastName : "",
+          email: socialInfo && socialInfo.email ? socialInfo.email : ""
+        },
+        socialFlag: socialInfo ? true : false
+      });
+    }
   }
 
   handleSubmit = event => {
@@ -82,6 +101,7 @@ class EmailSignup extends Component {
               value={this.state.formFields.firstName}
               onChange={this.handleInputChange}
               required
+              disabled={this.state.socialFlag}
             />
           </div>
           <div className="input-group">
@@ -93,6 +113,7 @@ class EmailSignup extends Component {
               value={this.state.formFields.lastName}
               onChange={this.handleInputChange}
               required
+              disabled={this.state.socialFlag}
             />
           </div>
           <div className="input-group">
@@ -104,33 +125,38 @@ class EmailSignup extends Component {
               value={this.state.formFields.email}
               onChange={this.handleInputChange}
               required
+              disabled={this.state.socialFlag}
             />
           </div>
           {this.state.emailErr && <div className="formErr">Invalid Email</div>}
-          <div className="input-group">
-            <input
-              type="password"
-              className="form-control"
-              placeholder="Password"
-              name="password"
-              value={this.state.formFields.password}
-              onChange={this.handleInputChange}
-              required
-            />
-          </div>
-          <div className="input-group">
-            <input
-              type="password"
-              className="form-control"
-              placeholder="Confirm password"
-              name="password2"
-              value={this.state.formFields.password2}
-              onChange={this.handleInputChange}
-              required
-            />
-          </div>
-          {this.state.passErr && (
-            <div className="formErr">Passwords must match</div>
+          {!this.state.socialFlag && (
+            <React.Fragment>
+              <div className="input-group">
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder="Password"
+                  name="password"
+                  value={this.state.formFields.password}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder="Confirm password"
+                  name="password2"
+                  value={this.state.formFields.password2}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </div>
+              {this.state.passErr && (
+                <div className="formErr">Passwords must match</div>
+              )}
+            </React.Fragment>
           )}
           <button className="btn btn-primary">Register</button>
         </div>

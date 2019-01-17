@@ -33,41 +33,53 @@ const TopNavBar = ({ user, handleLogout }) => {
                 Contact
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink to="/signup" className="nav-link">
-                Sign Up
-              </NavLink>
-            </li>
             {user.memberId ? (
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  id="navbarDropdown"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  {user.userName}
-                </a>
-                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <button
-                    className="dropdown-item"
-                    onClick={() => {
-                      handleLogout();
-                    }}
+              <React.Fragment>
+                <li className="nav-item">
+                  <NavLink to="/food/add-basic" className="nav-link">
+                    Add Basic Food
+                  </NavLink>
+                </li>
+                <li className="nav-item dropdown">
+                  <a
+                    className="nav-link dropdown-toggle"
+                    href="#"
+                    id="navbarDropdown"
+                    role="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
                   >
-                    Logout
-                  </button>
-                </div>
-              </li>
+                    {user.userName}
+                  </a>
+                  <div
+                    className="dropdown-menu"
+                    aria-labelledby="navbarDropdown"
+                  >
+                    <button
+                      className="dropdown-item"
+                      onClick={() => {
+                        handleLogout();
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </li>
+              </React.Fragment>
             ) : (
-              <li className="nav-item">
-                <NavLink to="/login" className="login-link nav-link">
-                  Login
-                </NavLink>
-              </li>
+              <React.Fragment>
+                <li className="nav-item">
+                  <NavLink to="/login" className="login-link nav-link">
+                    Login
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink to="/signup" className="nav-link">
+                    Sign Up
+                  </NavLink>
+                </li>
+              </React.Fragment>
             )}
           </ul>
         </div>

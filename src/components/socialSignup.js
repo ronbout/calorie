@@ -1,30 +1,40 @@
 import React, { Component } from "react";
+import GoogleLogin from "react-google-login";
 
 class socialSignup extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
-  /****
-   * nothing has been written for sign up yet
-   * will need to take info and add to database
-   * through api.  if google login, may need to ask
-   * more info
-   */
+
+  responseGoogle = resp => {
+    // get name and email, send up to parent to transfer to email form
+    console.log("google resp: ", resp.profileObj);
+    //  email, familyName, givenName, googleId, imageUrl, name
+    const googleInfo = {
+      firstName: resp.profileObj.givenName,
+      lastName: resp.profileObj.familyName,
+      email: resp.profileObj.email
+    };
+    this.props.handleSocial(googleInfo);
+  };
 
   render() {
     return (
       <React.Fragment>
         <div className="social-signup container-fluid d-flex flex-column justify-content-center text-center">
-          <div>
+          {/*<div>
             <button className="btn btn-outline-secondary social-btn">
               <h2>Sign Up with Facebook</h2>
             </button>
-          </div>
+          </div>*/}
           <div>
-            <button className="btn btn-outline-secondary social-btn">
-              <h2>Sign Up with Google</h2>
-            </button>
+            <GoogleLogin
+              clientId="339494038360-ui9ssd3umvcj4fkjft7ns4ies220l8l3.apps.googleusercontent.com"
+              buttonText="Register with Google"
+              onSuccess={this.responseGoogle}
+              onFailure={this.responseGoogle}
+            />
           </div>
         </div>
       </React.Fragment>

@@ -8,6 +8,7 @@ import TopNavBar from "./components/topNavBar";
 import Signup from "./components/signup";
 import Login from "./components/login";
 import Member from "./components/member";
+import Food from "./components/food";
 // eslint-disable-next-line
 import Error404 from "./components/error404";
 
@@ -60,6 +61,12 @@ class App extends Component {
             path="/member/:memberId"
             render={({ match }) => (
               <Member user={this.state.user} urlid={match.params.memberId} />
+            )}
+          />
+          <Route
+            path="/food/:action"
+            render={({ match }) => (
+              <Food user={this.state.user} action={match.params.action} />
             )}
           />
           <Route path="/signup" component={Signup} />,
