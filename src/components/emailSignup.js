@@ -6,6 +6,7 @@ class EmailSignup extends Component {
     super(props);
     this.state = {
       formFields: {
+        userName: "",
         firstName: "",
         lastName: "",
         email: "",
@@ -61,6 +62,17 @@ class EmailSignup extends Component {
     return (
       <form onSubmit={this.handleSubmit}>
         <div className="email-signup container-fluid d-flex flex-column justify-content-center">
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Username"
+              name="userName"
+              value={this.state.formFields.userName}
+              onChange={this.handleInputChange}
+              required
+            />
+          </div>
           <div className="input-group">
             <input
               type="text"
