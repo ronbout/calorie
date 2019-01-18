@@ -41,7 +41,9 @@ class SignUp extends Component {
           } else {
             // success.  let user know
             this.setState({
-              confirmMsg: "You have successfully registered and may log in now."
+              confirmMsg: this.state.socialInfo
+                ? "You are registered and may log in with Google now."
+                : "You are registered and may log in by email now."
             });
           }
         });

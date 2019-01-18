@@ -116,21 +116,23 @@ class EmailSignup extends Component {
               disabled={this.state.socialFlag}
             />
           </div>
-          <div className="input-group">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Email"
-              name="email"
-              value={this.state.formFields.email}
-              onChange={this.handleInputChange}
-              required
-              disabled={this.state.socialFlag}
-            />
-          </div>
-          {this.state.emailErr && <div className="formErr">Invalid Email</div>}
           {!this.state.socialFlag && (
             <React.Fragment>
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Email"
+                  name="email"
+                  value={this.state.formFields.email}
+                  onChange={this.handleInputChange}
+                  required
+                  disabled={this.state.socialFlag}
+                />
+              </div>
+              {this.state.emailErr && (
+                <div className="formErr">Invalid Email</div>
+              )}
               <div className="input-group">
                 <input
                   type="password"
