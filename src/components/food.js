@@ -17,7 +17,8 @@ const clearFormFields = {
     carbs: 0,
     protein: 0,
     fiber: 0,
-    points: 0
+    points: 0,
+    foodFav: false
   }
 };
 
@@ -83,6 +84,7 @@ class Food extends Component {
 
   handleInputChange = event => {
     const target = event.target;
+    const value = target.type === "checkbox" ? target.checked : target.value;
     // check for serving size entry and default serv units
     // as well as display reSize Calc form
     let sUnits =
@@ -96,7 +98,7 @@ class Food extends Component {
       formFields: {
         ...this.state.formFields,
         servUnits: sUnits,
-        [target.name]: target.value
+        [target.name]: value
       },
       ...errs
     });
@@ -200,6 +202,19 @@ class Food extends Component {
                     <option value="2">Tsp</option>
                     <option value="3">Fl Oz</option>
                   </select>
+                </div>
+                <div className="form-check">
+                  <input
+                    type="checkbox"
+                    id="foodFav"
+                    name="foodFav"
+                    className="form-check-input"
+                    value={this.state.formFields.foodFav}
+                    onChange={this.handleInputChange}
+                  />
+                  <label htmlFor="foodFav" className="form-check-label">
+                    Food Favorite:
+                  </label>
                 </div>
                 {this.state.formFields.servSize > 0 &&
                   this.state.formFields.calories > 0 && (
