@@ -15,7 +15,7 @@ class SignUp extends Component {
   handleSignUp = userInfo => {
     console.log("userInfo: ", userInfo);
     // clear out any error msg
-    this.setState({ errMsg: "" });
+    this.setState({ errMsg: "", confirmMsg: "" });
     let postBody = { ...userInfo, apiKey: API_KEY };
     let postConfig = {
       method: "post",
@@ -34,7 +34,7 @@ class SignUp extends Component {
           if (result.error) {
             this.setState({
               errMsg:
-                result.SQLState === 23000
+                result.errorCode === 23000
                   ? `Email ${userInfo.email} is already a registered user.`
                   : "An unknown error has occurred"
             });

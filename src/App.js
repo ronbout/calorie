@@ -12,6 +12,11 @@ import Food from "./components/food";
 // eslint-disable-next-line
 import Error404 from "./components/error404";
 
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faQuestion } from "@fortawesome/free-solid-svg-icons";
+
+library.add(faQuestion);
+
 class App extends Component {
   constructor(props) {
     super(props);

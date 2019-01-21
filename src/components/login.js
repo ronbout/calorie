@@ -17,9 +17,7 @@ class Login extends Component {
       `${API_BASE}${API_MEMBER}${API_KEY}&password=${password}&email=${email}`
     )
       .then(response => {
-        console.log("response: ", response);
         response.json().then(result => {
-          console.log("Result: ", result);
           this.props.handleLogin(result);
         });
       })

@@ -4,6 +4,8 @@ import { isEmail } from "../assets/js/library";
 class EmailSignup extends Component {
   constructor(props) {
     super(props);
+    // set up ref for assigning focus
+    this.usernameInput = React.createRef();
     this.state = {
       formFields: {
         userName: "",
@@ -34,6 +36,7 @@ class EmailSignup extends Component {
         },
         socialFlag: socialInfo ? true : false
       });
+      socialInfo && this.usernameInput.current.focus();
     }
   }
 
@@ -87,6 +90,7 @@ class EmailSignup extends Component {
               className="form-control"
               placeholder="Username"
               name="userName"
+              ref={this.usernameInput}
               value={this.state.formFields.userName}
               onChange={this.handleInputChange}
               required
@@ -160,7 +164,12 @@ class EmailSignup extends Component {
               )}
             </React.Fragment>
           )}
-          <button className="btn btn-primary">Register</button>
+          <button
+            className="btn btn-primary"
+            disabled={this.state.passErr || this.state.emailErr}
+          >
+            Register
+          </button>
         </div>
       </form>
     );
