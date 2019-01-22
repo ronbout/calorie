@@ -22,7 +22,7 @@ const clearFormFields = {
   }
 };
 
-class Food extends Component {
+class FoodBasic extends Component {
   constructor(props) {
     super(props);
     console.log("props: ", this.props);
@@ -188,7 +188,7 @@ class Food extends Component {
                 <div className="form-group">
                   <label htmlFor="servUnits">Serving Units:</label>
                   <select
-                    className="custom-select"
+                    className="form-control"
                     name="servUnits"
                     id="servUnits"
                     value={this.state.formFields.servUnits}
@@ -356,4 +356,4 @@ class Food extends Component {
   }
 }
 
-export default Food;
+export default FoodBasic;

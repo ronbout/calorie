@@ -36,9 +36,33 @@ const TopNavBar = ({ user, handleLogout }) => {
             {user.memberId ? (
               <React.Fragment>
                 <li className="nav-item">
-                  <NavLink to="/food/add-basic" className="nav-link">
-                    Add Basic Food
+                  <NavLink to="/food/setup" className="nav-link">
+                    Food Setup
                   </NavLink>
+                </li>
+                <li className="nav-item dropdown">
+                  <a
+                    className="nav-link dropdown-toggle"
+                    href="#"
+                    id="navbarDropdown"
+                    role="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Add Foods
+                  </a>
+                  <div
+                    className="dropdown-menu"
+                    aria-labelledby="navbarDropdown"
+                  >
+                    <NavLink to="/food/add-basic" className="dropdown-item">
+                      Add Food Basic
+                    </NavLink>
+                    <NavLink to="/food/add-recipe" className="dropdown-item">
+                      Add Food Recipe
+                    </NavLink>
+                  </div>
                 </li>
                 <li className="nav-item dropdown">
                   <a

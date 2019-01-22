@@ -8,14 +8,16 @@ import TopNavBar from "./components/topNavBar";
 import Signup from "./components/signup";
 import Login from "./components/login";
 import Member from "./components/member";
-import Food from "./components/food";
+import FoodBasic from "./components/foodBasic";
+import FoodRecipe from "./components/foodRecipe";
+import FoodSearch from "./components/foodSearch";
 // eslint-disable-next-line
 import Error404 from "./components/error404";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faQuestion } from "@fortawesome/free-solid-svg-icons";
+import { faQuestion, faSearch } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faQuestion);
+library.add(faQuestion, faSearch);
 
 class App extends Component {
   constructor(props) {
@@ -56,6 +58,10 @@ class App extends Component {
     this.props.history.push("/");
   };
 
+  handleFoodSelect = foodInfo => {
+    console.log("parent component food select info: ", foodInfo);
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -69,9 +75,20 @@ class App extends Component {
             )}
           />
           <Route
-            path="/food/:action"
-            render={({ match }) => (
-              <Food user={this.state.user} action={match.params.action} />
+            path="/food/add-basic"
+            render={() => <FoodBasic user={this.state.user} />}
+          />
+          <Route
+            path="/food/add-recipe"
+            render={() => <FoodRecipe user={this.state.user} />}
+          />
+          <Route
+            path="/food/setup"
+            render={() => (
+              <FoodSearch
+                user={this.state.user}
+                handleFoodSelect={this.handleFoodSelect}
+              />
             )}
           />
           <Route path="/signup" component={Signup} />,

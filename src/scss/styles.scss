@@ -2,10 +2,13 @@
 
 $body-color: red;
 
+@import "./components/foodSetup";
+
 // Bootstrap SASS
 @import "../../node_modules/bootstrap/scss/bootstrap";
 
 // Other styling
+
 body {
   height: 100%;
   width: 100%;
