@@ -1,0 +1,15 @@
+section.food-search {
+  background: #888;
+  color: #212529;
+
+  @include lg-form(16px);
+
+  #food-search-row input {
+    display: inline-block;
+    width: 85%;
+  }
+
+  button.btn.btn-question {
+    padding: 0.375em 0.6em;
+  }
+}

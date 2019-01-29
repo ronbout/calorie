@@ -9,7 +9,7 @@ const API_KEY = "api_key=6y9fgv43dl40f9wl";
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { errMsg: "" };
   }
 
   handleLogin = (email, password) => {
@@ -18,7 +18,14 @@ class Login extends Component {
     )
       .then(response => {
         response.json().then(result => {
-          this.props.handleLogin(result);
+          // need to check for user not found
+          console.log("result: ", result.data);
+          if (result.data) {
+            this.props.handleLogin(result);
+          } else {
+            // no user, so prepare error message
+            this.setState({ errMsg: "Unknown User Email" });
+          }
         });
       })
       .catch(error => {
@@ -35,6 +42,9 @@ class Login extends Component {
         <h1>Login</h1>
         <SocialLogin handleLogin={this.handleLogin} />
         <EmailLogin handleLogin={this.handleLogin} />
+        {this.state.errMsg && (
+          <div className="login-error error">{this.state.errMsg}</div>
+        )}
       </div>
     );
   }

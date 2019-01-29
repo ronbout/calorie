@@ -1,0 +1,76 @@
+@import "./foodSearch";
+
+.food-container {
+  padding: 0 1em;
+}
+
+.basic-food-form {
+  background: #ddd;
+  color: #212529;
+  border: 1px solid black;
+  padding: 0.5em 0 1em;
+
+  .form-group {
+    margin-bottom: 0.5em;
+  }
+}
+
+ul.tab-list {
+  margin: 0;
+  padding-inline-start: 1em;
+
+  li {
+    display: inline-block;
+    margin: 4px 0 0;
+    padding: 8px 82px 0;
+    border: 1px solid black;
+    border-bottom: 0;
+    cursor: pointer;
+    height: 33px;
+    margin-bottom: -1px;
+  }
+
+  li.active-tab {
+    background: #ddd;
+    border-bottom: none;
+    cursor: default;
+    height: 36px;
+    z-index: 20;
+  }
+}
+
+.fs-main {
+  section.food-setup {
+    flex-grow: 2;
+    min-width: 66%;
+  }
+  section.food-search {
+    flex-grow: 1;
+  }
+}
+
+.resize-button svg {
+  cursor: pointer;
+}
+
+.fs-btn-container {
+  button {
+    margin: 0 1em;
+  }
+}
+
+section.food-setup {
+  @include lg-form(16px);
+
+  label.col-form-label {
+    text-align: right;
+  }
+
+  .fav-checkbox {
+    label {
+      padding: 0;
+      position: relative;
+      vertical-align: top;
+    }
+  }
+}

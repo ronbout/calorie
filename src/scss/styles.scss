@@ -2,6 +2,64 @@
 
 $body-color: red;
 
+// mixins
+
+@mixin lg-form($em-size) {
+  font-size: $em-size;
+
+  // need to change rem to em so that the
+  // container styling is more modular
+  h1 {
+    font-size: 2.2em;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 1.8em;
+    text-align: center;
+  }
+
+  form,
+  div,
+  label,
+  input,
+  button,
+  select,
+  p {
+    font-size: 1em;
+    line-height: 1.4;
+  }
+
+  input[type="checkbox"] {
+    position: relative;
+    margin: 0 1em;
+    height: 20px;
+    width: 20px;
+  }
+
+  label,
+  p {
+    margin: 0;
+    padding: calc(0.375rem + 1px) 0;
+  }
+
+  option {
+    font-size: 0.96em;
+    line-height: 1.45;
+    padding-bottom: 2px;
+  }
+
+  option {
+    overflow-x: hidden;
+  }
+
+  input,
+  select {
+    padding: 0.2em 0.4em;
+    height: auto;
+  }
+}
+
 @import "./components/foodSetup";
 
 // Bootstrap SASS
@@ -69,6 +127,10 @@ body {
 .social-login button,
 .social-login button {
   font-size: 0.8rem;
+}
+
+.btn-question {
+  border-radius: 50%;
 }
 
 @media (max-width: 720px) {

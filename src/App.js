@@ -11,6 +11,7 @@ import Member from "./components/member";
 import FoodBasic from "./components/foodBasic";
 import FoodRecipe from "./components/foodRecipe";
 import FoodSearch from "./components/foodSearch";
+import FoodSetup from "./components/foodSetup";
 // eslint-disable-next-line
 import Error404 from "./components/error404";
 
@@ -84,6 +85,15 @@ class App extends Component {
           />
           <Route
             path="/food/setup"
+            render={() => (
+              <FoodSetup
+                user={this.state.user}
+                handleFoodSelect={this.handleFoodSelect}
+              />
+            )}
+          />
+          <Route
+            path="/food/search"
             render={() => (
               <FoodSearch
                 user={this.state.user}

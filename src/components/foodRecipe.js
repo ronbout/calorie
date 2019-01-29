@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const API_BASE = "http://localhost/api/";
+/* const API_BASE = "http://localhost/api/";
 const API_FOOD = "foods/recipe";
-const API_KEY = "6y9fgv43dl40f9wl";
+const API_KEY = "6y9fgv43dl40f9wl"; */
 
 const clearFormFields = {
   formFields: {
@@ -25,111 +25,24 @@ const clearFormFields = {
 class FoodRecipe extends Component {
   constructor(props) {
     super(props);
-    console.log("props: ", this.props);
+    console.log("recipe props: ", this.props);
     this.state = { ...clearFormFields, errMsg: "", confirmMsg: "" };
   }
 
   handleSubmit = event => {
     event.preventDefault();
-    console.log("Food form fields: ", this.state.formFields);
-    // clear out any error msg
-    this.setState({ errMsg: "", confirmMsg: "" });
-    let postBody = {
-      ...this.state.formFields,
-      apiKey: API_KEY,
-      owner: this.props.user.memberId
-    };
-    // resize is not needed
-    delete postBody.resize;
-    let postConfig = {
-      method: "post",
-      body: JSON.stringify(postBody),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    };
-    fetch(`${API_BASE}${API_FOOD}`, postConfig)
-      .then(response => {
-        console.log("response: ", response);
-        response.json().then(result => {
-          result = result.data;
-          console.log("Result: ", result);
-          // figure out what to do here
-          if (result.error) {
-            this.setState({
-              errMsg:
-                result.errorCode === 45001
-                  ? `User ${
-                      this.props.user.userName
-                    } already has a food named ${
-                      this.state.formFields.foodName
-                    }.`
-                  : "An unknown error has occurred"
-            });
-          } else {
-            // success.  let user know and clear out form
-            this.setState({
-              ...clearFormFields,
-              confirmMsg: `Food "${
-                this.state.formFields.foodName
-              }" has been created.`
-            });
-          }
-        });
-      })
-      .catch(error => {
-        console.log("Fetch error: ", error);
-      });
   };
 
   handleInputChange = event => {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
-    // check for serving size entry and default serv units
-    // as well as display reSize Calc form
-    let sUnits =
-      target.name === "servSize" &&
-      target.value &&
-      this.state.formFields.servUnits === 0
-        ? 1
-        : this.state.formFields.servUnits;
     let errs = {};
     this.setState({
       formFields: {
         ...this.state.formFields,
-        servUnits: sUnits,
         [target.name]: value
       },
       ...errs
-    });
-  };
-
-  resize = () => {
-    const nutFields = [
-      "calories",
-      "fat",
-      "carbs",
-      "protein",
-      "fiber",
-      "points"
-    ];
-    let newNuts = {};
-    const nutMult =
-      this.state.formFields.resize / this.state.formFields.servSize;
-    console.log(nutMult);
-    nutFields.forEach(nutrient => {
-      if (this.state.formFields[nutrient]) {
-        // round to nearest 1/10th
-        newNuts[nutrient] =
-          Math.round(this.state.formFields[nutrient] * 10 * nutMult) / 10;
-      }
-    });
-    this.setState({
-      formFields: {
-        ...this.state.formFields,
-        ...newNuts,
-        servSize: this.state.formFields.resize
-      }
     });
   };
 

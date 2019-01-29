@@ -7,10 +7,11 @@ const API_KEY = "6y9fgv43dl40f9wl";
 
 const clearFormFields = {
   formFields: {
+    foodId: "",
     foodName: "",
     foodDesc: "",
     servSize: "",
-    servUnits: 0,
+    servUnits: 1,
     resize: "",
     calories: 0,
     fat: 0,
@@ -26,7 +27,26 @@ class FoodBasic extends Component {
   constructor(props) {
     super(props);
     console.log("props: ", this.props);
-    this.state = { ...clearFormFields, errMsg: "", confirmMsg: "" };
+    this.state = this.props.foodInfo
+      ? {
+          formFields: { ...this.props.foodInfo, resize: "" },
+          errMsg: "",
+          confirmMsg: ""
+        }
+      : { ...clearFormFields, errMsg: "", confirmMsg: "" };
+  }
+
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.foodInfo !== prevProps.foodInfo) {
+      let formFields = this.props.foodInfo
+        ? this.props.foodInfo
+        : clearFormFields;
+
+      this.setState({
+        formFields: { ...formFields, resize: "" }
+      });
+    }
   }
 
   handleSubmit = event => {
@@ -104,7 +124,7 @@ class FoodBasic extends Component {
     });
   };
 
-  resize = () => {
+  handleResize = () => {
     const nutFields = [
       "calories",
       "fat",
@@ -133,24 +153,31 @@ class FoodBasic extends Component {
     });
   };
 
+  handleClear = () => {
+    this.setState({ ...clearFormFields, errMsg: "", confirmMsg: "" });
+  };
+
   render() {
+    let recalcFlag =
+      this.state.formFields.servSize > 0 && this.state.formFields.calories > 0;
     return (
-      <div style={{ marginBottom: "40px" }} className="food-container">
-        {this.state.confirmMsg && (
-          <div className="food-basic-confirm">{this.state.confirmMsg}</div>
-        )}
-        {this.state.errMsg && (
-          <div className="food-basic-error">{this.state.errMsg}</div>
-        )}
+      <div className="food-container">
         <form className="basic-food-form" onSubmit={this.handleSubmit}>
+          <input
+            type="hidden"
+            name="foodId"
+            value={this.state.formFields.foodId}
+          />
           <div className="basic-food-container container-fluid d-flex flex-column justify-content-center">
-            <div className="row">
-              <div className="food-desc-form-section col-md-6">
-                <h1 style={{ margin: "10px 0 20px 0", textAlign: "center" }}>
-                  Food Entry
-                </h1>
-                <div className="form-group">
-                  <label htmlFor="foodName">Food Name:</label>
+            <div className="food-desc-form-section">
+              <h2 style={{ margin: "10px 0 20px 0", textAlign: "center" }}>
+                Food Entry
+              </h2>
+              <div className="form-group row">
+                <label className="col-sm-2 col-form-label" htmlFor="foodName">
+                  Food Name: *
+                </label>
+                <div className="col-sm-7">
                   <input
                     type="text"
                     className="form-control"
@@ -161,8 +188,15 @@ class FoodBasic extends Component {
                     required
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="foodDesc">Description:</label>
+                <div className="col-sm-3">
+                  <p>( * - required field )</p>
+                </div>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-2 col-form-label" htmlFor="foodDesc">
+                  Description:
+                </label>
+                <div className="col-sm-10">
                   <input
                     type="text"
                     className="form-control"
@@ -172,8 +206,12 @@ class FoodBasic extends Component {
                     onChange={this.handleInputChange}
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="servSize">Serving Size:</label>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-2 col-form-label" htmlFor="servSize">
+                  Serving Size:
+                </label>
+                <div className="col-sm-6">
                   <input
                     type="number"
                     min="0.1"
@@ -185,8 +223,7 @@ class FoodBasic extends Component {
                     onChange={this.handleInputChange}
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="servUnits">Serving Units:</label>
+                <div className="col-sm-3">
                   <select
                     className="form-control"
                     name="servUnits"
@@ -194,7 +231,6 @@ class FoodBasic extends Component {
                     value={this.state.formFields.servUnits}
                     onChange={this.handleInputChange}
                   >
-                    <option value="0">Select serving units</option>
                     <option value="1">Grams</option>
                     <option value="2">Oz</option>
                     <option value="3">Cups</option>
@@ -203,7 +239,42 @@ class FoodBasic extends Component {
                     <option value="3">Fl Oz</option>
                   </select>
                 </div>
-                <div className="form-check">
+              </div>
+              <div className="resize-container form-group row">
+                <label className="col-sm-2 col-form-label" htmlFor="resize">
+                  New Size:
+                </label>
+                <div className="col-sm-6">
+                  <input
+                    type="number"
+                    min="0.1"
+                    step="0.1"
+                    className="form-control"
+                    name="resize"
+                    id="resize"
+                    value={this.state.formFields.resize}
+                    onChange={this.handleInputChange}
+                    disabled={!recalcFlag}
+                  />
+                </div>
+                <div className="col-sm-3 resize-button">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.handleResize}
+                    disabled={!this.state.formFields.resize > 0 || !recalcFlag}
+                  >
+                    Re-Calc Nutrients
+                  </button>
+                  <FontAwesomeIcon
+                    style={{ marginLeft: "20px" }}
+                    icon="question"
+                  />
+                </div>
+              </div>
+              <div className="form-group row fav-checkbox">
+                <div className="col-sm-2 text-right pr-0">Food Favorite?</div>
+                <div className="col-sm-10 form-check">
                   <input
                     type="checkbox"
                     id="foodFav"
@@ -212,55 +283,29 @@ class FoodBasic extends Component {
                     value={this.state.formFields.foodFav}
                     onChange={this.handleInputChange}
                   />
-                  <label htmlFor="foodFav" className="form-check-label">
-                    Food Favorite:
+                  <label
+                    className="col-sm-2 col-form-label form-check-label"
+                    htmlFor="foodFav"
+                  >
+                    Yes
                   </label>
                 </div>
-                {this.state.formFields.servSize > 0 &&
-                  this.state.formFields.calories > 0 && (
-                    <div className="resize-container">
-                      <div className="btn btn-primary resize-button">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={this.resize}
-                          disabled={!this.state.formFields.resize > 0}
-                        >
-                          Re-Size & Re-Calc Nutrients
-                        </button>
-                      </div>
-                      <FontAwesomeIcon
-                        style={{ marginLeft: "20px" }}
-                        icon="question"
-                      />
-                      <div className="form-group">
-                        <label htmlFor="resize">New Size:</label>
-                        <input
-                          type="number"
-                          min="0.1"
-                          step="0.1"
-                          className="form-control"
-                          name="resize"
-                          id="resize"
-                          value={this.state.formFields.resize}
-                          onChange={this.handleInputChange}
-                        />
-                      </div>
-                    </div>
-                  )}
               </div>
-              {
-                // Separate Nutrition section
-              }
-              <div className="food-nutrient-form-section col-md-6">
-                <h2 style={{ margin: "28px 0 8px 0", textAlign: "center" }}>
-                  Nutrition Info
-                </h2>
-                <div className="form-group">
-                  <label htmlFor="calories">Calories:</label>
+            </div>
+            {
+              // Separate Nutrition section
+            }
+            <div className="food-nutrient-form-section">
+              <h2>Nutrition Info</h2>
+              <div className="form-group row">
+                <label className="col-sm-2 col-form-label" htmlFor="calories">
+                  Calories: *
+                </label>
+                <div className="col-sm-6">
                   <input
                     type="number"
                     min="1"
+                    step="0.1"
                     className="form-control"
                     placeholder="Calories"
                     id="calories"
@@ -270,11 +315,16 @@ class FoodBasic extends Component {
                     required
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="fat">Fat Gms:</label>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-2 col-form-label" htmlFor="fat">
+                  Fat Gms:
+                </label>
+                <div className="col-sm-6">
                   <input
                     type="number"
                     min="0"
+                    step="0.1"
                     className="form-control"
                     placeholder="Fat Gms"
                     name="fat"
@@ -284,11 +334,16 @@ class FoodBasic extends Component {
                     required
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="carbs">Carb Gms:</label>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-2 col-form-label" htmlFor="carbs">
+                  Carb Gms:
+                </label>
+                <div className="col-sm-6">
                   <input
                     type="number"
                     min="0"
+                    step="0.1"
                     className="form-control"
                     placeholder="Carb Gms"
                     name="carbs"
@@ -298,11 +353,16 @@ class FoodBasic extends Component {
                     required
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="protein">Protein Gms:</label>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-2 col-form-label" htmlFor="protein">
+                  Protein Gms:
+                </label>
+                <div className="col-sm-6">
                   <input
                     type="number"
                     min="0"
+                    step="0.1"
                     className="form-control"
                     placeholder="Protein Gms"
                     name="protein"
@@ -312,11 +372,16 @@ class FoodBasic extends Component {
                     required
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="fiber">Fiber Gms:</label>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-2 col-form-label" htmlFor="fiber">
+                  Fiber Gms:
+                </label>
+                <div className="col-sm-6">
                   <input
                     type="number"
                     min="0"
+                    step="0.1"
                     className="form-control"
                     placeholder="Fiber Gms"
                     name="fiber"
@@ -325,11 +390,16 @@ class FoodBasic extends Component {
                     onChange={this.handleInputChange}
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="points">Points (ex. WeightWatchers):</label>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-2 col-form-label" htmlFor="points">
+                  Points:
+                </label>
+                <div className="col-sm-6">
                   <input
                     type="number"
                     min="0"
+                    step="0.1"
                     className="form-control"
                     placeholder="Points (ex. WeightWatchers) "
                     name="points"
@@ -340,16 +410,33 @@ class FoodBasic extends Component {
                 </div>
               </div>
             </div>
-            <div className="submit-container" style={{ textAlign: "center" }}>
+            <div className="fs-btn-container" style={{ textAlign: "center" }}>
               <button
                 className="btn btn-primary"
-                style={{ width: "50%" }}
-                disabled={false}
+                disabled={
+                  !this.state.formFields.foodName === "" ||
+                  !this.state.formFields.calories > 0
+                }
               >
-                Create Food
+                {this.state.formFields.foodId === ""
+                  ? "Add Food"
+                  : "Update Food"}
+              </button>
+              <button
+                className="btn btn-primary"
+                type="button"
+                onClick={this.handleClear}
+              >
+                Clear
               </button>
             </div>
           </div>
+          {this.state.confirmMsg && (
+            <div className="food-basic-confirm">{this.state.confirmMsg}</div>
+          )}
+          {this.state.errMsg && (
+            <div className="food-basic-error">{this.state.errMsg}</div>
+          )}
         </form>
       </div>
     );

@@ -94,11 +94,11 @@ class FoodSearch extends Component {
 
   render() {
     return (
-      <div className="container food-search-container">
-        <h1>Food Setup</h1>
+      <section className="food-search p-3">
+        <h1>Food Search</h1>
 
         {this.state.userMsg && (
-          <div className="food-serach-msg">{this.state.userMsg}</div>
+          <div className="food-search-msg">{this.state.userMsg}</div>
         )}
         {this.state.errMsg && (
           <div className="food-search-error">{this.state.errMsg}</div>
@@ -108,23 +108,25 @@ class FoodSearch extends Component {
           {/* keyword entry */}
           <div className="form-group">
             <label htmlFor="keyword">Food Name:</label>
-            <input
-              type="text"
-              className="form-control"
-              name="keyword"
-              id="keyword"
-              value={this.state.formFields.keyword}
-              onChange={this.handleInputChange}
-            />
-            <button className="btn">
-              <FontAwesomeIcon style={{ marginLeft: "20px" }} icon="question" />
-            </button>
+            <div id="food-search-row" className="row mx-0">
+              <input
+                type="text"
+                className="form-control"
+                name="keyword"
+                id="keyword"
+                value={this.state.formFields.keyword}
+                onChange={this.handleInputChange}
+              />
+              <button className="btn btn-question mx-1">
+                <FontAwesomeIcon icon="question" />
+              </button>
+            </div>
           </div>
           {/* food List returned from search api */}
           <div className="form-group">
             <select
               className="form-control"
-              size="20"
+              size="16"
               name="foodSelect"
               id="foodSelect"
               value={this.state.formFields.foodSelect}
@@ -150,7 +152,7 @@ class FoodSearch extends Component {
                         calDisp
                       }
                     >
-                      {foodInfo.name}
+                      {foodInfo.foodName}
                     </option>
                   );
                 })}
@@ -158,22 +160,18 @@ class FoodSearch extends Component {
           </div>
           <p>Hover over food for more details</p>
           {/* select food category (all or user foods - owner or fav) */}
-          <div
-            className={`form-check ${this.state.formFields.keyword === "" &&
-              "disabled"}`}
-          >
-            <label className="form-check-label" htmlFor="searchAllFoods">
+          <div className="form-check">
+            <label className="form-check-label" htmlFor="searchFavFoods">
               <input
                 type="radio"
                 className="form-check-input"
                 name="searchFoodOption"
-                id="searchAllFoods"
-                value="allFoods"
+                id="searchFavFoods"
+                value="favFoods"
                 onChange={this.handleInputChange}
-                checked={this.state.formFields.searchFoodOption === "allFoods"}
-                disabled={this.state.formFields.keyword === "" ? true : false}
+                checked={this.state.formFields.searchFoodOption === "favFoods"}
               />
-              Search All Foods (keyword required)
+              Search Fav Foods only
             </label>
           </div>
           <div className="form-check">
@@ -192,18 +190,23 @@ class FoodSearch extends Component {
               Search User Foods (Owned and Fav)
             </label>
           </div>
-          <div className="form-check">
-            <label className="form-check-label" htmlFor="searchFavFoods">
+          <div
+            className={`form-check ${
+              this.state.formFields.keyword === "" ? "disabled" : ""
+            }`}
+          >
+            <label className="form-check-label" htmlFor="searchAllFoods">
               <input
                 type="radio"
                 className="form-check-input"
                 name="searchFoodOption"
-                id="searchFavFoods"
-                value="favFoods"
+                id="searchAllFoods"
+                value="allFoods"
                 onChange={this.handleInputChange}
-                checked={this.state.formFields.searchFoodOption === "favFoods"}
+                checked={this.state.formFields.searchFoodOption === "allFoods"}
+                disabled={this.state.formFields.keyword === "" ? true : false}
               />
-              Search Fav Foods only
+              Search All Foods (keyword required)
             </label>
           </div>
           {/* Select and Refresh buttons 
@@ -211,7 +214,10 @@ class FoodSearch extends Component {
 							 Refresh submits form to get new food list
 						*/}
 
-          <div className="search-foods-buttons" style={{ textAlign: "center" }}>
+          <div
+            className="search-foods-buttons mt-3"
+            style={{ textAlign: "center" }}
+          >
             <button
               type="button"
               className="btn btn-primary"
@@ -226,7 +232,7 @@ class FoodSearch extends Component {
             </button>
           </div>
         </form>
-      </div>
+      </section>
     );
   }
 }
