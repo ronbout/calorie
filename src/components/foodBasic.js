@@ -280,7 +280,7 @@ class FoodBasic extends Component {
                     id="foodFav"
                     name="foodFav"
                     className="form-check-input"
-                    value={this.state.formFields.foodFav}
+                    checked={this.state.formFields.foodFav}
                     onChange={this.handleInputChange}
                   />
                   <label

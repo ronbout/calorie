@@ -3,6 +3,10 @@ import FoodSearch from "./foodSearch";
 import FoodBasic from "./foodBasic";
 import FoodRecipe from "./foodRecipe";
 
+const API_BASE = "http://localhost/api/";
+const API_FAVS = "foods/fav";
+const API_KEY = "6y9fgv43dl40f9wl";
+
 class FoodSetup extends Component {
   constructor(props) {
     super(props);
@@ -20,14 +24,32 @@ class FoodSetup extends Component {
 
   handleFoodSelect = foodInfo => {
     console.log("parent component food select info: ", foodInfo);
+    // need to fetch food fav.  start that off first
+    const apiFavUrl = `${API_BASE}${API_FAVS}/${
+      foodInfo.foodId
+    }?api_key=${API_KEY}`;
+    fetch(apiFavUrl)
+      .then(response => {
+        response.json().then(result => {
+          result = result.data.map(obj => obj.memberId);
+
+          this.setState({
+            foodInfo: {
+              ...foodInfo,
+              foodFav: result.indexOf(this.props.user.memberId) >= 0
+            }
+          });
+        });
+      })
+      .catch(error => {
+        console.log("Error fetching food favorites: ", error);
+      });
+    // now decide what to do based on food type
     if (foodInfo.foodType === "Basic Food") {
-      // just need to fetch food fav
-      // for now, just send data to foodBasic
       this.setState({
         tabIndex: 1,
         foodInfo: foodInfo,
-        resize: "",
-        foodFav: false
+        resize: ""
       });
     } else {
       // need to fetch recipe info
