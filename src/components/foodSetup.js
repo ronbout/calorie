@@ -4,7 +4,7 @@ import FoodBasic from "./foodBasic";
 import FoodRecipe from "./foodRecipe";
 
 const API_BASE = "http://localhost/api/";
-const API_FAVS = "foods/fav";
+const API_FAVS = "foods/notefav";
 const API_KEY = "6y9fgv43dl40f9wl";
 
 class FoodSetup extends Component {
@@ -31,12 +31,21 @@ class FoodSetup extends Component {
     fetch(apiFavUrl)
       .then(response => {
         response.json().then(result => {
-          result = result.data.map(obj => obj.memberId);
-
+          // check for no data and set food fav flag
+          let foodFav = false;
+          foodFav =
+            result.data !== undefined &&
+            result.data.favs !== undefined &&
+            result.data.favs
+              .map(obj => obj.memberId)
+              .indexOf(this.props.user.memberId) >= 0;
+          const notes = result.data.note;
+          console.log("foodFav: ", foodFav);
           this.setState({
             foodInfo: {
               ...foodInfo,
-              foodFav: result.indexOf(this.props.user.memberId) >= 0
+              foodFav,
+              notes
             }
           });
         });

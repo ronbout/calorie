@@ -59,7 +59,7 @@ section.food-search #food-search-row input {
   width: 85%;
 }
 
-section.food-search button.btn.btn-question {
+section.food-search button.btn.btn-search {
   padding: 0.375em 0.6em;
 }
 
@@ -186,6 +186,14 @@ section.food-setup .fav-checkbox label {
   padding: 0;
   position: relative;
   vertical-align: top;
+}
+
+section.food-setup textarea {
+  resize: none;
+}
+
+section.food-setup .notes-modal {
+  text-align: center;
 }
 
 /*!

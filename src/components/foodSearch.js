@@ -63,11 +63,21 @@ class FoodSearch extends Component {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     let errs = {};
-
+    console.log("target: ", target);
+    // if the keyword is cleared out and the search option
+    // is set to allFoods, changed it back to FavFoods
+    let searchFoodOption =
+      target.name === "keyword" && target.value === ""
+        ? "favFoods"
+        : target.name === "searchFoodOption"
+        ? target.value
+        : this.state.formFields.searchFoodOption;
+    console.log(searchFoodOption);
     this.setState({
       formFields: {
         ...this.state.formFields,
-        [target.name]: value
+        [target.name]: value,
+        searchFoodOption
       },
       ...errs
     });
@@ -117,8 +127,8 @@ class FoodSearch extends Component {
                 value={this.state.formFields.keyword}
                 onChange={this.handleInputChange}
               />
-              <button className="btn btn-question mx-1">
-                <FontAwesomeIcon icon="question" />
+              <button className="btn btn-search mx-1">
+                <FontAwesomeIcon icon="search" />
               </button>
             </div>
           </div>
@@ -144,7 +154,7 @@ class FoodSearch extends Component {
                       value={ndx}
                       onDoubleClick={this.handleSelect}
                       title={
-                        foodInfo.description +
+                        foodInfo.foodDesc +
                         this.convertHtmlToText("&#013;&#010;") +
                         "Owner: " +
                         foodInfo.owner +

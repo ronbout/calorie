@@ -10,6 +10,7 @@ const clearFormFields = {
     foodId: "",
     foodName: "",
     foodDesc: "",
+    foodType: "Basic Food",
     servSize: "",
     servUnits: 1,
     resize: "",
@@ -19,7 +20,10 @@ const clearFormFields = {
     protein: 0,
     fiber: 0,
     points: 0,
-    foodFav: false
+    foodFav: false,
+    notes: "",
+    onwer: "",
+    ownerId: ""
   }
 };
 
@@ -27,13 +31,16 @@ class FoodBasic extends Component {
   constructor(props) {
     super(props);
     console.log("props: ", this.props);
+    let foodFav =
+      this.props.foodInfo && this.props.foodInfo.foodFav ? true : false;
     this.state = this.props.foodInfo
       ? {
-          formFields: { ...this.props.foodInfo, resize: "" },
+          formFields: { ...this.props.foodInfo, foodFav, resize: "" },
           errMsg: "",
           confirmMsg: ""
         }
       : { ...clearFormFields, errMsg: "", confirmMsg: "" };
+    this.state.origForm = this.state.formFields;
   }
 
   componentDidUpdate(prevProps) {
@@ -42,9 +49,11 @@ class FoodBasic extends Component {
       let formFields = this.props.foodInfo
         ? this.props.foodInfo
         : clearFormFields;
-
+      // foodFav may be absent coming in from Food Setup while waiting on fetch
+      formFields.foodFav = formFields.foodFav ? formFields.foodFav : false;
       this.setState({
-        formFields: { ...formFields, resize: "" }
+        formFields: { ...formFields, resize: "" },
+        origForm: { ...formFields, resize: "" }
       });
     }
   }
@@ -154,7 +163,12 @@ class FoodBasic extends Component {
   };
 
   handleClear = () => {
-    this.setState({ ...clearFormFields, errMsg: "", confirmMsg: "" });
+    this.setState({
+      ...clearFormFields,
+      errMsg: "",
+      confirmMsg: "",
+      origForm: clearFormFields.formFields
+    });
   };
 
   render() {
@@ -429,6 +443,14 @@ class FoodBasic extends Component {
               >
                 Clear
               </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-toggle="modal"
+                data-target="#notesModal"
+              >
+                Notes
+              </button>
             </div>
           </div>
           {this.state.confirmMsg && (
@@ -437,6 +459,56 @@ class FoodBasic extends Component {
           {this.state.errMsg && (
             <div className="food-basic-error">{this.state.errMsg}</div>
           )}
+          <div
+            className="modal fade"
+            id="notesModal"
+            tabIndex="-1"
+            role="dialog"
+            aria-labelledby="notesModalLabel"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="notesModalLabel">
+                    Notes{" "}
+                    {this.state.formFields.foodName !== "" &&
+                      "for " + this.state.formFields.foodName}
+                  </h5>
+                  <button
+                    type="button"
+                    className="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body notes-modal">
+                  <label>
+                    <textarea
+                      cols="45"
+                      rows="10"
+                      name="notes"
+                      id="notes"
+                      placeholder="Enter useful information about the food such as preparation tips"
+                      value={this.state.formFields.notes}
+                      onChange={this.handleInputChange}
+                    />
+                  </label>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </form>
       </div>
     );
