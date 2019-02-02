@@ -190,6 +190,7 @@ section.food-setup .fav-checkbox label {
 
 section.food-setup textarea {
   resize: none;
+  overflow: auto;
 }
 
 section.food-setup .notes-modal {

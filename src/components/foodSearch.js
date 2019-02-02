@@ -63,7 +63,6 @@ class FoodSearch extends Component {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     let errs = {};
-    console.log("target: ", target);
     // if the keyword is cleared out and the search option
     // is set to allFoods, changed it back to FavFoods
     let searchFoodOption =
@@ -72,7 +71,6 @@ class FoodSearch extends Component {
         : target.name === "searchFoodOption"
         ? target.value
         : this.state.formFields.searchFoodOption;
-    console.log(searchFoodOption);
     this.setState({
       formFields: {
         ...this.state.formFields,

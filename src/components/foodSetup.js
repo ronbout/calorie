@@ -39,8 +39,8 @@ class FoodSetup extends Component {
             result.data.favs
               .map(obj => obj.memberId)
               .indexOf(this.props.user.memberId) >= 0;
-          const notes = result.data.note;
-          console.log("foodFav: ", foodFav);
+          let notes = result.data ? result.data.note : "";
+          console.log("notes: ", notes);
           this.setState({
             foodInfo: {
               ...foodInfo,
