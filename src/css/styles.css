@@ -63,18 +63,31 @@ section.food-search button.btn.btn-search {
   padding: 0.375em 0.6em;
 }
 
+.food-setup {
+  width: 66%;
+}
+
+.food-search {
+  width: 34%;
+}
+
 .food-container {
   padding: 0 1em;
 }
 
-.basic-food-form {
+.food-container h2 {
+  margin: 10px 0 20px;
+  text-align: center;
+}
+
+.food-container form {
   background: #ddd;
   color: #212529;
   border: 1px solid black;
   padding: 0.5em 0 1em;
 }
 
-.basic-food-form .form-group {
+.food-container form .form-group {
   margin-bottom: 0.5em;
 }
 
@@ -114,10 +127,6 @@ ul.tab-list li.active-tab {
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
-}
-
-.resize-button svg {
-  cursor: pointer;
 }
 
 .fs-btn-container button {
@@ -195,6 +204,40 @@ section.food-setup textarea {
 
 section.food-setup .notes-modal {
   text-align: center;
+}
+
+section.food-setup .resize-button svg {
+  cursor: pointer;
+}
+
+.food-recipe-container .serv-nuts div {
+  text-align: center;
+}
+
+.food-recipe-container .serv-nuts input {
+  text-align: right;
+}
+
+.food-recipe-container .food-recipe-form-section {
+  margin: 12px 0 0 0;
+}
+
+.food-recipe-container .food-recipe-form-section div.row {
+  margin: 8px;
+}
+
+.food-recipe-container .food-recipe-form-section h2 {
+  margin-bottom: 4px;
+}
+
+.food-recipe-container .food-recipe-form-section h2 + p {
+  text-align: center;
+  padding-top: 0;
+  margin-bottom: 20px;
+}
+
+.food-recipe-container .fs-btn-container {
+  margin: 20px 0 0 0;
 }
 
 /*!

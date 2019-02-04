@@ -5,50 +5,53 @@ const API_BASE = "http://localhost/api/";
 const API_FOOD = "foods/basic";
 const API_KEY = "6y9fgv43dl40f9wl";
 
-const clearFormFields = {
-  formFields: {
-    foodId: "",
-    foodName: "",
-    foodDesc: "",
-    foodType: "Basic Food",
-    servSize: "",
-    servUnits: 1,
-    resize: "",
-    calories: 0,
-    fat: 0,
-    carbs: 0,
-    protein: 0,
-    fiber: 0,
-    points: 0,
-    foodFav: false,
-    notes: "",
-    onwer: "",
-    ownerId: ""
-  }
-};
-
 class FoodBasic extends Component {
   constructor(props) {
     super(props);
     console.log("props: ", this.props);
+
+    this.clearFormFields = {
+      formFields: {
+        foodId: "",
+        foodName: "",
+        foodDesc: "",
+        foodType: "Basic Food",
+        servSize: "",
+        servUnits: 1,
+        resize: "",
+        calories: 0,
+        fat: 0,
+        carbs: 0,
+        protein: 0,
+        fiber: 0,
+        points: 0,
+        foodFav: false,
+        notes: "",
+        owner: this.props.user.userName,
+        ownerId: this.props.user.memberId
+      }
+    };
+
     let foodFav =
       this.props.foodInfo && this.props.foodInfo.foodFav ? true : false;
-    this.state = this.props.foodInfo
-      ? {
-          formFields: { ...this.props.foodInfo, foodFav, resize: "" },
-          errMsg: "",
-          confirmMsg: ""
-        }
-      : { ...clearFormFields, errMsg: "", confirmMsg: "" };
+    this.state =
+      this.props.foodInfo && props.foodInfo.foodType === "Basic Food"
+        ? {
+            formFields: { ...this.props.foodInfo, foodFav, resize: "" },
+            errMsg: "",
+            confirmMsg: ""
+          }
+        : { ...this.clearFormFields, errMsg: "", confirmMsg: "" };
     this.state.origForm = this.state.formFields;
   }
 
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     if (this.props.foodInfo !== prevProps.foodInfo) {
-      let formFields = this.props.foodInfo
-        ? this.props.foodInfo
-        : clearFormFields;
+      let formFields =
+        this.props.foodInfo && this.props.foodInfo.foodType === "Basic Food"
+          ? this.props.foodInfo
+          : this.clearFormFields;
       // foodFav may be absent coming in from Food Setup while waiting on fetch
       formFields.foodFav = formFields.foodFav ? formFields.foodFav : false;
       this.setState({
@@ -60,7 +63,6 @@ class FoodBasic extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    console.log("Food form fields: ", this.state.formFields);
     // clear out any error msg
     this.setState({ errMsg: "", confirmMsg: "" });
     let postBody = {
@@ -79,10 +81,8 @@ class FoodBasic extends Component {
     };
     fetch(`${API_BASE}${API_FOOD}`, postConfig)
       .then(response => {
-        console.log("response: ", response);
         response.json().then(result => {
           result = result.data;
-          console.log("Result: ", result);
           // figure out what to do here
           if (result.error) {
             this.setState({
@@ -98,7 +98,7 @@ class FoodBasic extends Component {
           } else {
             // success.  let user know and clear out form
             this.setState({
-              ...clearFormFields,
+              ...this.clearFormFields,
               confirmMsg: `Food "${
                 this.state.formFields.foodName
               }" has been created.`
@@ -114,19 +114,11 @@ class FoodBasic extends Component {
   handleInputChange = event => {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
-    // check for serving size entry and default serv units
-    // as well as display reSize Calc form
-    let sUnits =
-      target.name === "servSize" &&
-      target.value &&
-      this.state.formFields.servUnits === 0
-        ? 1
-        : this.state.formFields.servUnits;
+
     let errs = {};
     this.setState({
       formFields: {
         ...this.state.formFields,
-        servUnits: sUnits,
         [target.name]: value
       },
       ...errs
@@ -164,10 +156,10 @@ class FoodBasic extends Component {
 
   handleClear = () => {
     this.setState({
-      ...clearFormFields,
+      ...this.clearFormFields,
       errMsg: "",
       confirmMsg: "",
-      origForm: clearFormFields.formFields
+      origForm: this.clearFormFields.formFields
     });
   };
 
@@ -184,9 +176,7 @@ class FoodBasic extends Component {
           />
           <div className="basic-food-container container-fluid d-flex flex-column justify-content-center">
             <div className="food-desc-form-section">
-              <h2 style={{ margin: "10px 0 20px 0", textAlign: "center" }}>
-                Food Entry
-              </h2>
+              <h2>Basic Food Entry</h2>
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label" htmlFor="foodName">
                   Food Name: *
@@ -422,6 +412,21 @@ class FoodBasic extends Component {
                     onChange={this.handleInputChange}
                   />
                 </div>
+              </div>
+            </div>
+            <div className="form-group row">
+              <label className="col-sm-2 col-form-label" htmlFor="Owner">
+                Created by:
+              </label>
+              <div className="col-sm-6">
+                <input
+                  type="text"
+                  className="form-control"
+                  name="owner"
+                  id="owner"
+                  value={this.state.formFields.owner}
+                  disabled={true}
+                />
               </div>
             </div>
             <div className="fs-btn-container" style={{ textAlign: "center" }}>

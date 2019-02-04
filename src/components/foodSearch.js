@@ -89,6 +89,14 @@ class FoodSearch extends Component {
     this.props.handleFoodSelect && this.props.handleFoodSelect(selectFoodInfo);
   };
 
+  handleAddIngred = () => {
+    const selectFoodInfo = this.state.foodOptions[
+      this.state.formFields.foodSelect
+    ];
+    // if a prop was passed down to handle the food select, call it
+    this.props.handleAddIngred && this.props.handleAddIngred(selectFoodInfo);
+  };
+
   convertHtmlToText = value => {
     let d = document.createElement("div");
     d.innerHTML = value;
@@ -233,11 +241,21 @@ class FoodSearch extends Component {
               onClick={this.handleSelect}
               disabled={!this.state.foodOptions.length > 0}
             >
-              Select Food
+              Edit/View Food
             </button>
             <button className="btn btn-primary" style={{ marginLeft: "20px" }}>
               Refresh List
             </button>
+            {this.props.searchMode === 2 && (
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ marginLeft: "20px" }}
+                onClick={this.handleAddIngred}
+              >
+                Add Ingredient
+              </button>
+            )}
           </div>
         </form>
       </section>
