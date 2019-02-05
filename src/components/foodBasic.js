@@ -8,7 +8,6 @@ const API_KEY = "6y9fgv43dl40f9wl";
 class FoodBasic extends Component {
   constructor(props) {
     super(props);
-    console.log("props: ", this.props);
 
     this.clearFormFields = {
       formFields: {
@@ -39,7 +38,8 @@ class FoodBasic extends Component {
         ? {
             formFields: { ...this.props.foodInfo, foodFav, resize: "" },
             errMsg: "",
-            confirmMsg: ""
+            confirmMsg: "",
+            viewOnly: false
           }
         : { ...this.clearFormFields, errMsg: "", confirmMsg: "" };
     this.state.origForm = this.state.formFields;
@@ -54,15 +54,20 @@ class FoodBasic extends Component {
           : this.clearFormFields;
       // foodFav may be absent coming in from Food Setup while waiting on fetch
       formFields.foodFav = formFields.foodFav ? formFields.foodFav : false;
+      // check food owner against user to determine if viewOnly mode
+      const viewOnly = formFields.ownerId !== this.props.user.memberId;
       this.setState({
         formFields: { ...formFields, resize: "" },
-        origForm: { ...formFields, resize: "" }
+        origForm: { ...formFields, resize: "" },
+        viewOnly
       });
     }
   }
 
   handleSubmit = event => {
     event.preventDefault();
+    // just to be sure we didn't get here by error
+    if (this.state.viewOnly) return;
     // clear out any error msg
     this.setState({ errMsg: "", confirmMsg: "" });
     let postBody = {
@@ -159,7 +164,15 @@ class FoodBasic extends Component {
       ...this.clearFormFields,
       errMsg: "",
       confirmMsg: "",
+      viewOnly: false,
       origForm: this.clearFormFields.formFields
+    });
+  };
+
+  handleMarkFav = () => {
+    const foodFav = !this.state.formFields.foodFav;
+    this.setState({
+      formFields: { ...this.state.formFields, foodFav }
     });
   };
 
@@ -176,7 +189,7 @@ class FoodBasic extends Component {
           />
           <div className="basic-food-container container-fluid d-flex flex-column justify-content-center">
             <div className="food-desc-form-section">
-              <h2>Basic Food Entry</h2>
+              <h2>Basic Food View/Entry</h2>
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label" htmlFor="foodName">
                   Food Name: *
@@ -190,6 +203,7 @@ class FoodBasic extends Component {
                     value={this.state.formFields.foodName}
                     onChange={this.handleInputChange}
                     required
+                    disabled={this.state.viewOnly}
                   />
                 </div>
                 <div className="col-sm-3">
@@ -208,6 +222,7 @@ class FoodBasic extends Component {
                     id="foodDesc"
                     value={this.state.formFields.foodDesc}
                     onChange={this.handleInputChange}
+                    disabled={this.state.viewOnly}
                   />
                 </div>
               </div>
@@ -225,6 +240,7 @@ class FoodBasic extends Component {
                     id="servSize"
                     value={this.state.formFields.servSize}
                     onChange={this.handleInputChange}
+                    disabled={this.state.viewOnly}
                   />
                 </div>
                 <div className="col-sm-3">
@@ -234,6 +250,7 @@ class FoodBasic extends Component {
                     id="servUnits"
                     value={this.state.formFields.servUnits}
                     onChange={this.handleInputChange}
+                    disabled={this.state.viewOnly}
                   >
                     <option value="1">Grams</option>
                     <option value="2">Oz</option>
@@ -258,7 +275,7 @@ class FoodBasic extends Component {
                     id="resize"
                     value={this.state.formFields.resize}
                     onChange={this.handleInputChange}
-                    disabled={!recalcFlag}
+                    disabled={!recalcFlag || this.state.viewOnly}
                   />
                 </div>
                 <div className="col-sm-3 resize-button">
@@ -286,13 +303,8 @@ class FoodBasic extends Component {
                     className="form-check-input"
                     checked={this.state.formFields.foodFav}
                     onChange={this.handleInputChange}
+                    disabled
                   />
-                  <label
-                    className="col-sm-2 col-form-label form-check-label"
-                    htmlFor="foodFav"
-                  >
-                    Yes
-                  </label>
                 </div>
               </div>
             </div>
@@ -317,6 +329,7 @@ class FoodBasic extends Component {
                     value={this.state.formFields.calories}
                     onChange={this.handleInputChange}
                     required
+                    disabled={this.state.viewOnly}
                   />
                 </div>
               </div>
@@ -336,6 +349,7 @@ class FoodBasic extends Component {
                     value={this.state.formFields.fat}
                     onChange={this.handleInputChange}
                     required
+                    disabled={this.state.viewOnly}
                   />
                 </div>
               </div>
@@ -355,6 +369,7 @@ class FoodBasic extends Component {
                     value={this.state.formFields.carbs}
                     onChange={this.handleInputChange}
                     required
+                    disabled={this.state.viewOnly}
                   />
                 </div>
               </div>
@@ -374,6 +389,7 @@ class FoodBasic extends Component {
                     value={this.state.formFields.protein}
                     onChange={this.handleInputChange}
                     required
+                    disabled={this.state.viewOnly}
                   />
                 </div>
               </div>
@@ -392,6 +408,7 @@ class FoodBasic extends Component {
                     id="fiber"
                     value={this.state.formFields.fiber}
                     onChange={this.handleInputChange}
+                    disabled={this.state.viewOnly}
                   />
                 </div>
               </div>
@@ -410,31 +427,36 @@ class FoodBasic extends Component {
                     id="points"
                     value={this.state.formFields.points}
                     onChange={this.handleInputChange}
+                    disabled={this.state.viewOnly}
                   />
                 </div>
               </div>
             </div>
             <div className="form-group row">
               <label className="col-sm-2 col-form-label" htmlFor="Owner">
-                Created by:
+                Food Created by:
               </label>
-              <div className="col-sm-6">
+              <div className="col-sm-4">
                 <input
                   type="text"
                   className="form-control"
                   name="owner"
                   id="owner"
                   value={this.state.formFields.owner}
-                  disabled={true}
+                  disabled
                 />
+              </div>
+              <div className="col-sm-5">
+                {this.state.viewOnly && <p>View Only Mode</p>}
               </div>
             </div>
             <div className="fs-btn-container" style={{ textAlign: "center" }}>
               <button
                 className="btn btn-primary"
                 disabled={
-                  !this.state.formFields.foodName === "" ||
-                  !this.state.formFields.calories > 0
+                  this.state.formFields.foodName === "" ||
+                  !this.state.formFields.calories > 0 ||
+                  this.state.viewOnly
                 }
               >
                 {this.state.formFields.foodId === ""
@@ -455,6 +477,17 @@ class FoodBasic extends Component {
                 data-target="#notesModal"
               >
                 Notes
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={
+                  this.state.formFields.foodName === "" ||
+                  !this.state.formFields.calories > 0
+                }
+                onClick={this.handleMarkFav}
+              >
+                {this.state.formFields.foodFav ? "UnMark Fav" : "Mark Fav"}
               </button>
             </div>
           </div>
@@ -499,6 +532,7 @@ class FoodBasic extends Component {
                       placeholder="Enter useful information about the food such as preparation tips"
                       value={this.state.formFields.notes}
                       onChange={this.handleInputChange}
+                      disabled={this.state.viewOnly}
                     />
                   </label>
                 </div>

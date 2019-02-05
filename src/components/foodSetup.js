@@ -12,25 +12,25 @@ const API_KEY = "6y9fgv43dl40f9wl";
 class FoodSetup extends Component {
   constructor(props) {
     super(props);
+
+    const startMode = 2;
     this.state = {
-      tabIndex: 2,
+      tabIndex: startMode,
+      searchMode: startMode, // used for FoodSearch so it knows what to do on dblClick
+      // 1-New Basic, 2-New Recipe, 3-Edit Basic, 4-Edit Recipe, 5-View Recipe
       foodInfo: "",
       ingred: ""
     };
   }
 
   handleTabClick = tabIndex => {
-    let foodInfo = this.state.foodInfo;
-    if (
-      foodInfo &&
-      ((foodInfo.foodType === "Basic Food" && tabIndex === 2) ||
-        (foodInfo.foodType === "Recipe Food" && tabIndex === 1))
-    ) {
-      foodInfo = "";
-    }
+    if (tabIndex === this.state.tabIndex) return;
+    const foodInfo = "";
+    const searchMode = tabIndex;
     this.setState({
       tabIndex,
-      foodInfo: { ...foodInfo }
+      foodInfo,
+      searchMode
     });
   };
 
@@ -65,14 +65,17 @@ class FoodSetup extends Component {
   };
 
   handleFoodSelect = foodInfo => {
+    // clear out any left over ingred
     // now decide what to do based on food type
     if (foodInfo.foodType === "Basic Food") {
       // need to fetch food fav.  start that off first
       this.getFavNoteInfo(foodInfo);
       this.setState({
         tabIndex: 1,
+        searchMode: 3,
         foodInfo: foodInfo,
-        resize: ""
+        resize: "",
+        ingred: ""
       });
     } else {
       // need to fetch recipe info
@@ -87,11 +90,16 @@ class FoodSetup extends Component {
             // and no foods are deleted
             // eventually add code...just in case
             let recipeInfo = { ...result.data, foodType: "Food Recipe" };
+            // check owner against user and change set searchMode accordingly
+            const searchMode =
+              recipeInfo.ownerId === this.props.user.memberId ? 4 : 5;
             this.setState({
               tabIndex: 2,
+              searchMode,
               foodInfo: {
                 ...recipeInfo
-              }
+              },
+              ingred: ""
             });
             // send off the fav/notes api
             this.getFavNoteInfo(recipeInfo);
@@ -130,6 +138,15 @@ class FoodSetup extends Component {
       });
   };
 
+  handleNewRecipeName = newName => {
+    // weird little routine used to send info from FoodRecipe to sibling
+    // FoodSearch so that dblClicks will result in Add Ingredient as user
+    // has begun to create a new Recipe/Meal
+    this.setState({
+      searchMode: newName ? 4 : 2
+    });
+  };
+
   render() {
     return (
       <main className="container-fluid fs-main d-flex p-2 bg-highlight">
@@ -162,13 +179,14 @@ class FoodSetup extends Component {
                 user={this.props.user}
                 foodInfo={this.state.foodInfo}
                 ingred={this.state.ingred}
+                handleNewRecipeName={this.handleNewRecipeName}
               />
             )}
           </div>
         </section>
         <FoodSearch
           user={this.props.user}
-          searchMode={this.state.tabIndex}
+          searchMode={this.state.searchMode}
           handleFoodSelect={this.handleFoodSelect}
           handleAddIngred={this.handleAddIngred}
         />

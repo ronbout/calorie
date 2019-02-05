@@ -158,7 +158,11 @@ class FoodSearch extends Component {
                     <option
                       key={ndx}
                       value={ndx}
-                      onDoubleClick={this.handleSelect}
+                      onDoubleClick={
+                        this.props.searchMode === 4
+                          ? this.handleAddIngred
+                          : this.handleSelect
+                      }
                       title={
                         foodInfo.foodDesc +
                         this.convertHtmlToText("&#013;&#010;") +
@@ -246,7 +250,7 @@ class FoodSearch extends Component {
             <button className="btn btn-primary" style={{ marginLeft: "20px" }}>
               Refresh List
             </button>
-            {this.props.searchMode === 2 && (
+            {(this.props.searchMode === 4 || this.props.searchMode === 2) && (
               <button
                 type="button"
                 className="btn btn-primary"

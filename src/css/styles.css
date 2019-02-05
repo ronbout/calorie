@@ -219,7 +219,7 @@ section.food-setup .resize-button svg {
 }
 
 .food-recipe-container .food-recipe-form-section {
-  margin: 12px 0 0 0;
+  margin: 12px 0 24px;
 }
 
 .food-recipe-container .food-recipe-form-section div.row {
@@ -234,6 +234,10 @@ section.food-setup .resize-button svg {
   text-align: center;
   padding-top: 0;
   margin-bottom: 20px;
+}
+
+.food-recipe-container .ingred-row input {
+  margin: 0 4px;
 }
 
 .food-recipe-container .fs-btn-container {

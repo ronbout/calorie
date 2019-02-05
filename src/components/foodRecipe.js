@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 //import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+const API_BASE = "http://localhost/api/";
+const API_RECIPE = "foods/recipe";
+const API_KEY = "6y9fgv43dl40f9wl";
+
 class FoodRecipe extends Component {
   constructor(props) {
     super(props);
@@ -44,14 +48,15 @@ class FoodRecipe extends Component {
         ? {
             formFields: { ...this.props.foodInfo, foodFav, resize: "" },
             errMsg: "",
-            confirmMsg: ""
+            confirmMsg: "",
+            viewOnly: false
           }
         : { ...this.clearFormFields, errMsg: "", confirmMsg: "" };
     this.state.origForm = this.state.formFields;
   }
 
   componentDidUpdate(prevProps) {
-    // Typical usage (don't forget to compare props):
+    // Typical usage (don't forget to compare props)
     if (this.props.foodInfo !== prevProps.foodInfo) {
       let formFields =
         this.props.foodInfo && this.props.foodInfo.foodType === "Food Recipe"
@@ -59,28 +64,94 @@ class FoodRecipe extends Component {
           : this.clearFormFields;
       // foodFav may be absent coming in from Food Setup while waiting on fetch
       formFields.foodFav = formFields.foodFav ? formFields.foodFav : false;
+      // check food owner against user to determine if viewOnly mode
+      const viewOnly = formFields.ownerId !== this.props.user.memberId;
       this.setState({
         formFields: { ...formFields },
-        origForm: { ...formFields }
+        origForm: { ...formFields },
+        viewOnly
       });
     } else if (this.props.ingred && this.props.ingred !== prevProps.ingred) {
-      // have to calculate the new nutrient value for the recipe and update state
       let ingreds = this.state.formFields.ingreds;
-      ingreds.push(this.props.ingred);
-      let servNuts = this.calcServNuts(ingreds);
-      this.setState({
-        formFields: { ...this.state.formFields, ingreds, servNuts }
-      });
+      // make sure that this ingredient does not already exist
+      if (
+        ingreds.map(obj => obj.ingredId).indexOf(this.props.ingred.ingredId) >=
+        0
+      ) {
+        this.setState({
+          errMsg: "That ingredient is already included."
+        });
+      } else {
+        // have to calculate the new nutrient value for the recipe and update state
+        ingreds.push(this.props.ingred);
+        let servNuts = this.calcServNuts(ingreds);
+        this.setState({
+          formFields: { ...this.state.formFields, ingreds, servNuts }
+        });
+      }
     }
   }
 
   handleSubmit = event => {
     event.preventDefault();
+    // just to be sure we didn't get here by error
+    if (this.state.viewOnly) return;
+    // clear out any error msg
+    this.setState({ errMsg: "", confirmMsg: "" });
+    let postBody = {
+      ...this.state.formFields,
+      apiKey: API_KEY,
+      owner: this.props.user.memberId
+    };
+    // foodType and servNuts not needed
+    delete postBody.foodType;
+    delete postBody.servNuts;
+    let postConfig = {
+      method: "post",
+      body: JSON.stringify(postBody),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+    fetch(`${API_BASE}${API_RECIPE}`, postConfig)
+      .then(response => {
+        response.json().then(result => {
+          result = result.data;
+          // figure out what to do here
+          if (result.error) {
+            this.setState({
+              errMsg:
+                result.errorCode === 45001
+                  ? `User ${
+                      this.props.user.userName
+                    } already has a food named ${
+                      this.state.formFields.foodName
+                    }.`
+                  : "An unknown error has occurred"
+            });
+          } else {
+            // success.  let user know and clear out form
+            this.setState({
+              formFields: { ...this.clearFormFields.formFields, ingreds: [] },
+              confirmMsg: `Food "${
+                this.state.formFields.foodName
+              }" has been created.`
+            });
+          }
+        });
+      })
+      .catch(error => {
+        console.log("Fetch error: ", error);
+      });
   };
 
   handleInputChange = event => {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
+    const changeMode =
+      target.name === "foodName" &&
+      ((this.state.formFields.foodName === "" && target.value !== "") ||
+        (this.state.formFields.foodName !== "" && target.value === ""));
 
     let errs = {};
     this.setState({
@@ -90,14 +161,47 @@ class FoodRecipe extends Component {
       },
       ...errs
     });
+    if (changeMode) this.props.handleNewRecipeName(target.value);
+  };
+
+  handleIngredServChange = (ndx, event) => {
+    const target = event.target;
+
+    let ingreds = this.state.formFields.ingreds;
+    ingreds[ndx].ingredServings = target.value;
+
+    let servNuts = this.calcServNuts(ingreds);
+    this.setState({
+      formFields: { ...this.state.formFields, ingreds, servNuts }
+    });
   };
 
   handleClear = () => {
     this.setState({
-      ...this.clearFormFields,
+      formFields: { ...this.clearFormFields.formFields, ingreds: [] },
       errMsg: "",
       confirmMsg: "",
+      viewOnly: false,
       origForm: this.clearFormFields.formFields
+    });
+    this.props.handleNewRecipeName("");
+  };
+
+  handleDelIngred = (ndx, event) => {
+    console.log(ndx);
+    let ingreds = this.state.formFields.ingreds;
+    ingreds.splice(ndx, 1);
+
+    let servNuts = this.calcServNuts(ingreds);
+    this.setState({
+      formFields: { ...this.state.formFields, ingreds, servNuts }
+    });
+  };
+
+  handleMarkFav = () => {
+    const foodFav = !this.state.formFields.foodFav;
+    this.setState({
+      formFields: { ...this.state.formFields, foodFav }
     });
   };
 
@@ -132,7 +236,7 @@ class FoodRecipe extends Component {
           />
           <div className="food-recipe-container container-fluid d-flex flex-column justify-content-center">
             <div className="food-desc-form-section">
-              <h2>Food Recipe Entry</h2>
+              <h2>Food Recipe View/Entry</h2>
               <div className="form-group row">
                 <label className="col-sm-2 col-form-label" htmlFor="foodName">
                   Food Name: *
@@ -146,6 +250,7 @@ class FoodRecipe extends Component {
                     value={this.state.formFields.foodName}
                     onChange={this.handleInputChange}
                     required
+                    disabled={this.state.viewOnly}
                   />
                 </div>
                 <div className="col-sm-3">
@@ -164,6 +269,7 @@ class FoodRecipe extends Component {
                     id="foodDesc"
                     value={this.state.formFields.foodDesc}
                     onChange={this.handleInputChange}
+                    disabled={this.state.viewOnly}
                   />
                 </div>
               </div>
@@ -181,6 +287,7 @@ class FoodRecipe extends Component {
                     id="servSize"
                     value={this.state.formFields.servSize}
                     onChange={this.handleInputChange}
+                    disabled={this.state.viewOnly}
                   />
                 </div>
                 <div className="col-sm-3">
@@ -190,6 +297,7 @@ class FoodRecipe extends Component {
                     id="servUnits"
                     value={this.state.formFields.servUnits}
                     onChange={this.handleInputChange}
+                    disabled={this.state.viewOnly}
                   >
                     <option value="1">Grams</option>
                     <option value="2">Oz</option>
@@ -209,14 +317,26 @@ class FoodRecipe extends Component {
                     name="foodFav"
                     className="form-check-input"
                     checked={this.state.formFields.foodFav}
-                    onChange={this.handleInputChange}
+                    disabled
                   />
-                  <label
-                    className="col-sm-2 col-form-label form-check-label"
-                    htmlFor="foodFav"
-                  >
-                    Yes
-                  </label>
+                </div>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-2 col-form-label" htmlFor="recipeServ">
+                  Servings Per Recipe:
+                </label>
+                <div className="col-sm-2">
+                  <input
+                    type="number"
+                    min="0.1"
+                    step="0.1"
+                    className="form-control"
+                    name="recipeServs"
+                    id="recipeServs"
+                    value={this.state.formFields.recipeServs}
+                    onChange={this.handleInputChange}
+                    disabled={this.state.viewOnly}
+                  />
                 </div>
               </div>
             </div>
@@ -309,41 +429,82 @@ class FoodRecipe extends Component {
             <div className="food-recipe-form-section">
               <h2>Recipe Ingredients</h2>
               <p>(Use the Food Search box to Add an Ingredient)</p>
+              {this.state.formFields.ingreds.length > 0 && (
+                <div className="row">
+                  <div className="col-sm-4">Ingredient Name</div>
+                  <div className="col-sm-4">Description</div>
+                  <div className="col-sm-2">Servings</div>
+                  {!this.state.viewOnly && (
+                    <div className="col-sm-1">Delete</div>
+                  )}
+                </div>
+              )}
               {// loop through the state ingreds array
               // to load the ingredients plus a blank
               // row to add a new ingred
               this.state.formFields.ingreds.map((ingred, ndx) => (
-                <div key={ingred.ingredId} className="row">
+                <div key={ingred.ingredId} className="row ingred-row">
                   <input
+                    className="col-sm-4"
                     type="text"
                     name={"ingred" + ndx}
                     value={ingred.ingredName}
                     disabled
                   />
+                  <input
+                    className="col-sm-4"
+                    type="text"
+                    name={"ingredDesc" + ndx}
+                    value={ingred.ingredDesc}
+                    disabled
+                  />
+                  <input
+                    className="col-sm-2"
+                    type="number"
+                    min="0.1"
+                    step="0.01"
+                    name={"ingredServ" + ndx}
+                    value={ingred.ingredServings}
+                    onChange={event => this.handleIngredServChange(ndx, event)}
+                    disabled={this.state.viewOnly}
+                  />
+                  {!this.state.viewOnly && (
+                    <button
+                      type="button"
+                      className="col-sm-1 btn btn-danger"
+                      onClick={event => this.handleDelIngred(ndx, event)}
+                    >
+                      X
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
             <div className="form-group row">
               <label className="col-sm-2 col-form-label" htmlFor="Owner">
-                Created by:
+                Food Created by:
               </label>
-              <div className="col-sm-6">
+              <div className="col-sm-4">
                 <input
                   type="text"
                   className="form-control"
                   name="owner"
                   id="owner"
                   value={this.state.formFields.owner}
-                  disabled={true}
+                  disabled
                 />
+              </div>
+              <div className="col-sm-5">
+                {this.state.viewOnly && <p>View Only Mode</p>}
               </div>
             </div>
             <div className="fs-btn-container" style={{ textAlign: "center" }}>
               <button
                 className="btn btn-primary"
                 disabled={
-                  !this.state.formFields.foodName === "" ||
-                  !this.state.formFields.calories > 0
+                  this.state.formFields.foodName === "" ||
+                  this.state.formFields.ingreds.length === 0 ||
+                  this.state.viewOnly
                 }
               >
                 {this.state.formFields.foodId === ""
@@ -364,6 +525,17 @@ class FoodRecipe extends Component {
                 data-target="#notesModal"
               >
                 Notes
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={
+                  this.state.formFields.foodName === "" ||
+                  this.state.formFields.ingreds.length === 0
+                }
+                onClick={this.handleMarkFav}
+              >
+                {this.state.formFields.foodFav ? "UnMark Fav" : "Mark Fav"}
               </button>
             </div>
           </div>
@@ -408,6 +580,7 @@ class FoodRecipe extends Component {
                       placeholder="Enter useful information about the food such as preparation tips"
                       value={this.state.formFields.notes}
                       onChange={this.handleInputChange}
+                      disabled={this.state.viewOnly}
                     />
                   </label>
                 </div>

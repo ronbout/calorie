@@ -106,7 +106,7 @@ section.food-setup {
   }
 
   .food-recipe-form-section {
-    margin: 12px 0 0 0;
+    margin: 12px 0 24px;
 
     div.row {
       margin: 8px;
@@ -120,6 +120,9 @@ section.food-setup {
       padding-top: 0;
       margin-bottom: 20px;
     }
+  }
+  .ingred-row input {
+    margin: 0 4px;
   }
 
   .fs-btn-container {
