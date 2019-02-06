@@ -203,6 +203,7 @@ class FoodRecipe extends Component {
     this.setState({
       formFields: { ...this.state.formFields, foodFav }
     });
+    this.props.handleMarkFav(this.state.formFields.foodId, foodFav);
   };
 
   calcServNuts = ingreds => {

@@ -4,7 +4,8 @@ import FoodBasic from "./foodBasic";
 import FoodRecipe from "./foodRecipe";
 
 const API_BASE = "http://localhost/api/";
-const API_FAVS = "foods/notefav";
+const API_NOTEFAVS = "foods/notefav";
+const API_FAVS = "foods/fav";
 const API_RECIPE = "foods/recipe";
 const API_NUTS = "foods/nutrients";
 const API_KEY = "6y9fgv43dl40f9wl";
@@ -19,7 +20,8 @@ class FoodSetup extends Component {
       searchMode: startMode, // used for FoodSearch so it knows what to do on dblClick
       // 1-New Basic, 2-New Recipe, 3-Edit Basic, 4-Edit Recipe, 5-View Recipe
       foodInfo: "",
-      ingred: ""
+      ingred: "",
+      errMsg: ""
     };
   }
 
@@ -35,7 +37,7 @@ class FoodSetup extends Component {
   };
 
   getFavNoteInfo = foodInfo => {
-    const apiFavUrl = `${API_BASE}${API_FAVS}/${
+    const apiFavUrl = `${API_BASE}${API_NOTEFAVS}/${
       foodInfo.foodId
     }?api_key=${API_KEY}`;
     fetch(apiFavUrl)
@@ -147,6 +149,46 @@ class FoodSetup extends Component {
     });
   };
 
+  handleMarkFav = (foodId, foodFav) => {
+    // common routine for both basic food and food recipe
+    this.setState({ errMsg: "" });
+    let putBody = {
+      foodFav,
+      apiKey: API_KEY,
+      owner: this.props.user.memberId
+    };
+
+    let putConfig = {
+      method: "put",
+      body: JSON.stringify(putBody),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+    const apiFavUrl = `${API_BASE}${API_FAVS}/${foodId}`;
+    fetch(apiFavUrl, putConfig)
+      .then(response => {
+        response.json().then(result => {
+          // check for no data
+          if (!result.data) {
+            const errMsg =
+              "Unknown error updating the Food Favs.  " + result.error &&
+              result.error;
+            console.log(errMsg);
+            /***
+             * need to add screen display of error msg
+             */
+            this.setState({
+              errMsg
+            });
+          }
+        });
+      })
+      .catch(error => {
+        console.log("Error fetching food favorites: ", error);
+      });
+  };
+
   render() {
     return (
       <main className="container-fluid fs-main d-flex p-2 bg-highlight">
@@ -173,6 +215,7 @@ class FoodSetup extends Component {
               <FoodBasic
                 user={this.props.user}
                 foodInfo={this.state.foodInfo}
+                handleMarkFav={this.handleMarkFav}
               />
             ) : (
               <FoodRecipe
@@ -180,6 +223,7 @@ class FoodSetup extends Component {
                 foodInfo={this.state.foodInfo}
                 ingred={this.state.ingred}
                 handleNewRecipeName={this.handleNewRecipeName}
+                handleMarkFav={this.handleMarkFav}
               />
             )}
           </div>

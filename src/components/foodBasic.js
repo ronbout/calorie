@@ -174,6 +174,7 @@ class FoodBasic extends Component {
     this.setState({
       formFields: { ...this.state.formFields, foodFav }
     });
+    this.props.handleMarkFav(this.state.formFields.foodId, foodFav);
   };
 
   render() {
