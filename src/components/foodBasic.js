@@ -70,21 +70,29 @@ class FoodBasic extends Component {
     if (this.state.viewOnly) return;
     // clear out any error msg
     this.setState({ errMsg: "", confirmMsg: "" });
-    let postBody = {
+
+    let body = {
       ...this.state.formFields,
       apiKey: API_KEY,
       owner: this.props.user.memberId
     };
     // resize is not needed
-    delete postBody.resize;
-    let postConfig = {
-      method: "post",
-      body: JSON.stringify(postBody),
+    delete body.resize;
+    // need to know if this is a new food or update
+    // (post vs put)
+    const foodId = this.state.formFields.foodId;
+    const httpMethod = foodId ? "put" : "post";
+    const basicUrl = foodId
+      ? `${API_BASE}${API_FOOD}/${foodId}`
+      : `${API_BASE}${API_FOOD}`;
+    let httpConfig = {
+      method: httpMethod,
+      body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json"
       }
     };
-    fetch(`${API_BASE}${API_FOOD}`, postConfig)
+    fetch(basicUrl, httpConfig)
       .then(response => {
         response.json().then(result => {
           result = result.data;
@@ -104,9 +112,9 @@ class FoodBasic extends Component {
             // success.  let user know and clear out form
             this.setState({
               ...this.clearFormFields,
-              confirmMsg: `Food "${
-                this.state.formFields.foodName
-              }" has been created.`
+              confirmMsg: `Food "${this.state.formFields.foodName}" has been ${
+                httpMethod === "post" ? "created." : "updated."
+              }`
             });
           }
         });
@@ -174,7 +182,8 @@ class FoodBasic extends Component {
     this.setState({
       formFields: { ...this.state.formFields, foodFav }
     });
-    this.props.handleMarkFav(this.state.formFields.foodId, foodFav);
+    this.state.formFields.foodId &&
+      this.props.handleMarkFav(this.state.formFields.foodId, foodFav);
   };
 
   render() {
@@ -482,10 +491,7 @@ class FoodBasic extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                disabled={
-                  this.state.formFields.foodName === "" ||
-                  !this.state.formFields.calories > 0
-                }
+                disabled={this.state.formFields.foodName === ""}
                 onClick={this.handleMarkFav}
               >
                 {this.state.formFields.foodFav ? "UnMark Fav" : "Mark Fav"}

@@ -203,7 +203,8 @@ class FoodRecipe extends Component {
     this.setState({
       formFields: { ...this.state.formFields, foodFav }
     });
-    this.props.handleMarkFav(this.state.formFields.foodId, foodFav);
+    this.state.formFields.foodId &&
+      this.props.handleMarkFav(this.state.formFields.foodId, foodFav);
   };
 
   calcServNuts = ingreds => {
@@ -530,10 +531,7 @@ class FoodRecipe extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                disabled={
-                  this.state.formFields.foodName === "" ||
-                  this.state.formFields.ingreds.length === 0
-                }
+                disabled={this.state.formFields.foodName === ""}
                 onClick={this.handleMarkFav}
               >
                 {this.state.formFields.foodFav ? "UnMark Fav" : "Mark Fav"}
