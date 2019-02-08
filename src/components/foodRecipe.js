@@ -98,22 +98,27 @@ class FoodRecipe extends Component {
     if (this.state.viewOnly) return;
     // clear out any error msg
     this.setState({ errMsg: "", confirmMsg: "" });
-    let postBody = {
+    let body = {
       ...this.state.formFields,
       apiKey: API_KEY,
       owner: this.props.user.memberId
     };
     // foodType and servNuts not needed
-    delete postBody.foodType;
-    delete postBody.servNuts;
-    let postConfig = {
-      method: "post",
-      body: JSON.stringify(postBody),
+    delete body.foodType;
+    delete body.servNuts;
+    const foodId = this.state.formFields.foodId;
+    const httpMethod = foodId ? "put" : "post";
+    const recipeUrl = foodId
+      ? `${API_BASE}${API_RECIPE}/${foodId}`
+      : `${API_BASE}${API_RECIPE}`;
+    let httpConfig = {
+      method: httpMethod,
+      body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json"
       }
     };
-    fetch(`${API_BASE}${API_RECIPE}`, postConfig)
+    fetch(recipeUrl, httpConfig)
       .then(response => {
         response.json().then(result => {
           result = result.data;
@@ -133,9 +138,9 @@ class FoodRecipe extends Component {
             // success.  let user know and clear out form
             this.setState({
               formFields: { ...this.clearFormFields.formFields, ingreds: [] },
-              confirmMsg: `Food "${
-                this.state.formFields.foodName
-              }" has been created.`
+              confirmMsg: `Food "${this.state.formFields.foodName}" has been ${
+                httpMethod === "post" ? "created." : "updated."
+              }`
             });
           }
         });
