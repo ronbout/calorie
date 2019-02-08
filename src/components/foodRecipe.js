@@ -142,6 +142,9 @@ class FoodRecipe extends Component {
                 httpMethod === "post" ? "created." : "updated."
               }`
             });
+            // change the search mode so that dbl click on search form does
+            // not try to add an ingredient, but pulls up that food
+            this.props.handleChangeMode(2);
           }
         });
       })

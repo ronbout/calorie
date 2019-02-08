@@ -189,6 +189,13 @@ class FoodSetup extends Component {
       });
   };
 
+  handleChangeMode = searchMode => {
+    // this is for updates to the recipe screen that change the search mode
+    this.setState({
+      searchMode
+    });
+  };
+
   render() {
     return (
       <main className="container-fluid fs-main d-flex p-2 bg-highlight">
@@ -224,6 +231,7 @@ class FoodSetup extends Component {
                 ingred={this.state.ingred}
                 handleNewRecipeName={this.handleNewRecipeName}
                 handleMarkFav={this.handleMarkFav}
+                handleChangeMode={this.handleChangeMode}
               />
             )}
           </div>
