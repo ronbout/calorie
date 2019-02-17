@@ -1,13 +1,5 @@
 @import "./foodSearch";
 
-.food-setup {
-  width: 66%;
-}
-
-.food-search {
-  width: 34%;
-}
-
 .food-container {
   padding: 0 1em;
 
@@ -53,12 +45,33 @@ ul.tab-list {
 }
 
 .fs-main {
+  justify-content: center;
+
   section.food-setup {
     flex-grow: 2;
-    min-width: 66%;
+    max-width: 685px;
+
+    div[class^="col-"] {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
   }
   section.food-search {
     flex-grow: 1;
+    max-width: 450px;
+  }
+
+  @media (max-width: 960px) {
+    flex-direction: column;
+
+    section.food-search,
+    section.food-setup {
+      width: 100%;
+      margin: auto;
+    }
+    section.food-search {
+      margin: 2rem auto;
+    }
   }
 }
 
@@ -69,7 +82,7 @@ ul.tab-list {
 }
 
 section.food-setup {
-  @include lg-form(16px);
+  @include lg-form(15px);
 
   label.col-form-label {
     text-align: right;

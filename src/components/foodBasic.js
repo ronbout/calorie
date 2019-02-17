@@ -116,6 +116,7 @@ class FoodBasic extends Component {
                 httpMethod === "post" ? "created." : "updated."
               }`
             });
+            this.props.handleChangeMode(1);
           }
         });
       })
@@ -201,10 +202,10 @@ class FoodBasic extends Component {
             <div className="food-desc-form-section">
               <h2>Basic Food View/Entry</h2>
               <div className="form-group row">
-                <label className="col-sm-2 col-form-label" htmlFor="foodName">
+                <label className="col-sm-3 col-form-label" htmlFor="foodName">
                   Food Name: *
                 </label>
-                <div className="col-sm-7">
+                <div className="col-sm-5">
                   <input
                     type="text"
                     className="form-control"
@@ -216,15 +217,15 @@ class FoodBasic extends Component {
                     disabled={this.state.viewOnly}
                   />
                 </div>
-                <div className="col-sm-3">
+                <div className="col-sm-4">
                   <p>( * - required field )</p>
                 </div>
               </div>
               <div className="form-group row">
-                <label className="col-sm-2 col-form-label" htmlFor="foodDesc">
+                <label className="col-sm-3 col-form-label" htmlFor="foodDesc">
                   Description:
                 </label>
-                <div className="col-sm-10">
+                <div className="col-sm-8">
                   <input
                     type="text"
                     className="form-control"
@@ -237,10 +238,10 @@ class FoodBasic extends Component {
                 </div>
               </div>
               <div className="form-group row">
-                <label className="col-sm-2 col-form-label" htmlFor="servSize">
+                <label className="col-sm-3 col-form-label" htmlFor="servSize">
                   Serving Size:
                 </label>
-                <div className="col-sm-6">
+                <div className="col-sm-5">
                   <input
                     type="number"
                     min="0.1"
@@ -253,7 +254,7 @@ class FoodBasic extends Component {
                     disabled={this.state.viewOnly}
                   />
                 </div>
-                <div className="col-sm-3">
+                <div className="col-sm-2">
                   <select
                     className="form-control"
                     name="servUnits"
@@ -272,10 +273,10 @@ class FoodBasic extends Component {
                 </div>
               </div>
               <div className="resize-container form-group row">
-                <label className="col-sm-2 col-form-label" htmlFor="resize">
+                <label className="col-sm-3 col-form-label" htmlFor="resize">
                   New Size:
                 </label>
-                <div className="col-sm-6">
+                <div className="col-sm-5">
                   <input
                     type="number"
                     min="0.1"
@@ -295,7 +296,7 @@ class FoodBasic extends Component {
                     onClick={this.handleResize}
                     disabled={!this.state.formFields.resize > 0 || !recalcFlag}
                   >
-                    Re-Calc Nutrients
+                    Re-Calc
                   </button>
                   <FontAwesomeIcon
                     style={{ marginLeft: "20px" }}
@@ -304,8 +305,8 @@ class FoodBasic extends Component {
                 </div>
               </div>
               <div className="form-group row fav-checkbox">
-                <div className="col-sm-2 text-right pr-0">Food Favorite?</div>
-                <div className="col-sm-10 form-check">
+                <div className="col-sm-3 text-right pr-0">Food Favorite?</div>
+                <div className="col-sm-9 form-check">
                   <input
                     type="checkbox"
                     id="foodFav"
@@ -324,10 +325,10 @@ class FoodBasic extends Component {
             <div className="food-nutrient-form-section">
               <h2>Nutrition Info</h2>
               <div className="form-group row">
-                <label className="col-sm-2 col-form-label" htmlFor="calories">
+                <label className="col-sm-3 col-form-label" htmlFor="calories">
                   Calories: *
                 </label>
-                <div className="col-sm-6">
+                <div className="col-sm-5">
                   <input
                     type="number"
                     min="1"
@@ -344,10 +345,10 @@ class FoodBasic extends Component {
                 </div>
               </div>
               <div className="form-group row">
-                <label className="col-sm-2 col-form-label" htmlFor="fat">
+                <label className="col-sm-3 col-form-label" htmlFor="fat">
                   Fat Gms:
                 </label>
-                <div className="col-sm-6">
+                <div className="col-sm-5">
                   <input
                     type="number"
                     min="0"
@@ -364,10 +365,10 @@ class FoodBasic extends Component {
                 </div>
               </div>
               <div className="form-group row">
-                <label className="col-sm-2 col-form-label" htmlFor="carbs">
+                <label className="col-sm-3 col-form-label" htmlFor="carbs">
                   Carb Gms:
                 </label>
-                <div className="col-sm-6">
+                <div className="col-sm-5">
                   <input
                     type="number"
                     min="0"
@@ -384,10 +385,10 @@ class FoodBasic extends Component {
                 </div>
               </div>
               <div className="form-group row">
-                <label className="col-sm-2 col-form-label" htmlFor="protein">
+                <label className="col-sm-3 col-form-label" htmlFor="protein">
                   Protein Gms:
                 </label>
-                <div className="col-sm-6">
+                <div className="col-sm-5">
                   <input
                     type="number"
                     min="0"
@@ -404,10 +405,10 @@ class FoodBasic extends Component {
                 </div>
               </div>
               <div className="form-group row">
-                <label className="col-sm-2 col-form-label" htmlFor="fiber">
+                <label className="col-sm-3 col-form-label" htmlFor="fiber">
                   Fiber Gms:
                 </label>
-                <div className="col-sm-6">
+                <div className="col-sm-5">
                   <input
                     type="number"
                     min="0"
@@ -423,10 +424,10 @@ class FoodBasic extends Component {
                 </div>
               </div>
               <div className="form-group row">
-                <label className="col-sm-2 col-form-label" htmlFor="points">
+                <label className="col-sm-3 col-form-label" htmlFor="points">
                   Points:
                 </label>
-                <div className="col-sm-6">
+                <div className="col-sm-5">
                   <input
                     type="number"
                     min="0"
@@ -443,7 +444,7 @@ class FoodBasic extends Component {
               </div>
             </div>
             <div className="form-group row">
-              <label className="col-sm-2 col-form-label" htmlFor="Owner">
+              <label className="col-sm-3 col-form-label" htmlFor="Owner">
                 Food Created by:
               </label>
               <div className="col-sm-4">
@@ -456,7 +457,7 @@ class FoodBasic extends Component {
                   disabled
                 />
               </div>
-              <div className="col-sm-5">
+              <div className="col-sm-4">
                 {this.state.viewOnly && <p>View Only Mode</p>}
               </div>
             </div>

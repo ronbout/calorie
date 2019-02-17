@@ -14,14 +14,15 @@ class FoodSetup extends Component {
   constructor(props) {
     super(props);
 
-    const startMode = 2;
+    const startMode = 1;
     this.state = {
       tabIndex: startMode,
       searchMode: startMode, // used for FoodSearch so it knows what to do on dblClick
       // 1-New Basic, 2-New Recipe, 3-Edit Basic, 4-Edit Recipe, 5-View Recipe
       foodInfo: "",
       ingred: "",
-      errMsg: ""
+      errMsg: "",
+      forceRefresh: true // this is just a toggle to force a Search re-render
     };
   }
 
@@ -151,7 +152,10 @@ class FoodSetup extends Component {
 
   handleMarkFav = (foodId, foodFav) => {
     // common routine for both basic food and food recipe
-    this.setState({ errMsg: "" });
+    this.setState({
+      errMsg: "",
+      forceRefresh: !this.state.forceRefresh
+    });
     let putBody = {
       foodFav,
       apiKey: API_KEY,
@@ -192,7 +196,8 @@ class FoodSetup extends Component {
   handleChangeMode = searchMode => {
     // this is for updates to the recipe screen that change the search mode
     this.setState({
-      searchMode
+      searchMode,
+      forceRefresh: !this.state.forceRefresh
     });
   };
 
@@ -223,6 +228,7 @@ class FoodSetup extends Component {
                 user={this.props.user}
                 foodInfo={this.state.foodInfo}
                 handleMarkFav={this.handleMarkFav}
+                handleChangeMode={this.handleChangeMode}
               />
             ) : (
               <FoodRecipe
@@ -239,6 +245,7 @@ class FoodSetup extends Component {
         <FoodSearch
           user={this.props.user}
           searchMode={this.state.searchMode}
+          forceRefresh={this.state.forceRefresh}
           handleFoodSelect={this.handleFoodSelect}
           handleAddIngred={this.handleAddIngred}
         />

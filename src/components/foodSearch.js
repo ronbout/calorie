@@ -28,6 +28,23 @@ class FoodSearch extends Component {
     this.handleSearch();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    // auto refresh the search list
+    // if forceRefresh, it is coming in from parent and needs
+    // to wait for database update, hence the setTimeout
+    if (this.props.forceRefresh !== prevProps.forceRefresh) {
+      setTimeout(this.handleSearch, 800);
+    }
+
+    // this is just a change in our radio button so immediate
+    if (
+      this.state.formFields.searchFoodOption !==
+      prevState.formFields.searchFoodOption
+    ) {
+      this.handleSearch();
+    }
+  }
+
   handleSearch = event => {
     event && event.preventDefault();
     // build query string with api key added
@@ -152,7 +169,20 @@ class FoodSearch extends Component {
                 this.state.foodOptions.map((foodInfo, ndx) => {
                   let calDisp =
                     foodInfo.foodType === "Basic Food"
-                      ? "Calories: " + foodInfo.calories
+                      ? "Calories: " +
+                        foodInfo.calories +
+                        this.convertHtmlToText("&#013;&#010;") +
+                        "Fat: " +
+                        foodInfo.fat +
+                        this.convertHtmlToText("&#013;&#010;") +
+                        "Carbs: " +
+                        foodInfo.carbs +
+                        this.convertHtmlToText("&#013;&#010;") +
+                        "Protein: " +
+                        foodInfo.protein +
+                        this.convertHtmlToText("&#013;&#010;") +
+                        "Fiber: " +
+                        foodInfo.fiber
                       : "Food Recipe";
                   return (
                     <option
@@ -241,23 +271,29 @@ class FoodSearch extends Component {
             <button
               type="button"
               className="btn btn-primary"
-              style={{ marginRight: "20px" }}
+              style={{ marginRight: "15px" }}
               onClick={this.handleSelect}
               disabled={!this.state.foodOptions.length > 0}
             >
-              Edit/View Food
+              Edit/View
+              <br />
+              Food
             </button>
-            <button className="btn btn-primary" style={{ marginLeft: "20px" }}>
-              Refresh List
+            <button className="btn btn-primary" style={{ marginLeft: "15px" }}>
+              Refresh
+              <br />
+              List
             </button>
             {(this.props.searchMode === 4 || this.props.searchMode === 2) && (
               <button
                 type="button"
                 className="btn btn-primary"
-                style={{ marginLeft: "20px" }}
+                style={{ marginLeft: "30px" }}
                 onClick={this.handleAddIngred}
               >
-                Add Ingredient
+                Add
+                <br />
+                Ingredient
               </button>
             )}
           </div>
